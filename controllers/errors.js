@@ -1,0 +1,56 @@
+exports.install = function () {
+    F.route('#400', handleError);
+    F.route('#401', handleError);
+    F.route('#403', handleError);
+    F.route('#404', handleError);
+    F.route('#500', handleError);
+
+	ErrorBuilder.addTransform('clear', function () {
+		this.items.forEach(function (item) {
+			delete item.path;
+		});
+		return this;
+	}, true);
+};
+
+function handleError() {
+	var self = this;
+	self.status = parseFloat(self.subscribe.route.name.substring(1, 4));
+	var isAcceptTypeJson = self.req && self.req.headers && self.req.headers.accept && self.req.headers.accept.indexOf('application/json') >= 0;
+    switch (self.status) {
+		case 400:
+		case 500:
+			if (isAcceptTypeJson) {
+				return self.json(U.prepareException(self.exception));
+			}
+            self.layout();
+			return self.view('error', U.prepareException(self.exception));
+		case 401:
+			if (isAcceptTypeJson) {
+				return self.json(U.prepareException(self.exception));
+			}
+			if (self.req.isAuthorized) {
+				return self.redirect('/');
+			}
+			return self.redirect('/login');
+		case 403:
+		case 404:
+			if (isAcceptTypeJson) {
+				return self.json(U.prepareException(self.exception));
+			}
+			return self.redirect('/');
+		case 409:
+			self.status = 409;
+			if (isAcceptTypeJson) {
+				return self.json(U.prepareException(self.exception));
+			}
+            self.layout();
+			return self.view('error', U.prepareException(self.exception));
+		default:
+			if (isAcceptTypeJson) {
+				return self.json();
+			}
+            self.layout();
+			return self.view('error', U.prepareException(self.exception));
+	}
+}

@@ -1,0 +1,23 @@
+{
+  "name": "Bakalarka",
+  "description": "Administration interface and client for finding shortest path ",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "UNLICENSED",
+  "version": "1.0.0",
+  "dependencies": {
+    "aws-sdk": "2.3.6",
+    "moment-timezone": "^0.5.2",
+    "mongodb": "2.1.7",
+    "total.js": "1.9.6"
+  },
+  "author": {
+    "name": "Marek Bugaj",
+    "email": "bugymarek@gmail.com"
+  },
+  "engines": {
+    "node": "4.4.0"
+  }
+}

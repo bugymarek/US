@@ -1,0 +1,882 @@
+/* Farby */
+
+$lightBackgroundColor: #ededed;
+$darkBackgroundColor: #dedede;
+
+$lightRedColor: #d9534f;
+$darkRedColor: #d43f3a;
+
+$lightGrayColor: #a3a3a3;
+$darkGrayColor: #868686;
+
+$lightBorderColor: #d4d4d4;
+$darkBorderColor: #888888;
+
+$lightTableBackgroundColor: #f9f9f9;
+$darkTableBackgroundColor: #f5f5f5;
+
+$activatedColor: #5cb85c;
+$deactivatedColor: #d9534f;
+
+/* Globalne */
+
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: $lightBackgroundColor;
+    border-top: 3px solid $lightGrayColor;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -ms-font-smoothing: antialiased;
+    -o-font-smoothing: antialiased;
+}
+
+#bg {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    width: 100%;
+    height: 65px;
+    background-color: #fff;
+    border-bottom: 1px solid $lightBorderColor;
+}
+
+#bg.logged-out-user {
+    height: 62px;
+}
+
+#wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+#content-wrapper {
+    position: inherit;
+    margin-top: 42px;
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid $lightBorderColor;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#content-wrapper h1 {
+    margin: 9px 0 15px 0;
+    font-size: 22px;
+}
+
+#content-wrapper .well {
+    font-size: 13px;
+    padding: 15px;
+    margin-bottom: 0;
+    margin-top: 15px;
+    background-color: $lightTableBackgroundColor;
+    border: 1px solid $lightBorderColor;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+#content-wrapper .well p {
+    margin-bottom: 5px;
+}
+
+#content-wrapper .well p:last-of-type {
+    margin-bottom: 0;
+}
+
+#content-wrapper .login-panel {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#content-wrapper.logged-out-user {
+    max-width: 433px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hide-on-desktop {
+    display: none;
+}
+
+.show-on-mobile {
+    display: none;
+}
+
+.form-control {
+    border-color: $lightBorderColor;
+}
+
+.form-control-note {
+    font-weight: 300;
+    font-size: 13px;
+}
+
+
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.btn-content-action {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.without-bottom-margin {
+    margin-bottom: 0;
+}
+
+.half-padding-left {
+    padding-left: 7px;
+}
+
+.padding {
+    padding: 0px;  
+}
+
+
+.half-padding-right {
+    padding-right: 7px;
+}
+
+.thumb {
+    max-width: 150px;
+    max-height: 150px;
+}
+
+.pac-container {
+    z-index: 1100!important;
+}
+
+/* Upload obrazkov na S3 */
+
+.upload-image-wrapper {
+    width: 100%;
+    padding-bottom: 28%;
+    padding-top: 28%;
+    position: relative;
+    border: 1px dotted $lightBorderColor;
+    border-radius: 4px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.upload-image-wrapper .upload-image-container {
+    text-align: center;
+}
+
+.upload-image-wrapper.with-bg {
+    padding-bottom: 3%;
+    padding-top: 53%;
+}
+
+#upload-image-error {
+    display: none;
+}
+
+/* Modalne okno */
+
+ .additional-infos {
+    text-align: right;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+ .confirm-delete-item {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 12px;
+    
+}
+
+
+.modal #delete-item {
+    display: none;
+}
+
+.modal .alert {
+    margin-bottom: 5px;
+}
+
+#festival-location-picker {
+    height: 340px;
+}
+
+ #festival-location-picker-wrapper {
+    position: relative;
+}
+
+
+.modal .btn-delete {
+    float: left;
+}
+
+/* Tlacidla */
+
+.btn-submit {
+    background-color: $lightGrayColor;
+    border-color: $darkGrayColor;
+    color: #fff;
+    float: right;
+}
+
+.btn-submit:hover,
+.btn-submit:focus {
+    background-color: $darkGrayColor;
+    border-color: $darkGrayColor;
+    color: #fff;
+}
+
+.btn-normal {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-color: $lightGrayColor;
+    color: $lightGrayColor;
+}
+
+
+.btn-normal:hover,
+.btn-normal:focus {
+    background-color: #fff;
+    border-color: $darkGrayColor;
+    color: $darkGrayColor;
+}
+
+.btn-delete {
+    background-color: #fff;
+    border-color: $lightRedColor;
+    color: $lightRedColor;
+    float: left;
+}
+
+.btn-delete:hover,
+.btn-delete:focus {
+    background-color: #fff;
+    border-color: $darkRedColor;
+    color: $darkRedColor;
+}
+
+/* Tabulkove vypisy */
+
+.table {
+    margin-bottom: 0;
+}
+
+.table.with-margin {
+    margin-bottom: 20px;
+}
+
+.table-hover > tbody > tr:hover {
+    background-color: $darkTableBackgroundColor!important;
+    cursor: pointer;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: $lightTableBackgroundColor;   
+}
+
+.table-bordered {
+    border-color: $lightBorderColor;
+}
+
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > tbody > tr > td,
+.table-bordered > tfoot > tr > td {
+    border-color: $lightBorderColor;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > td {
+    vertical-align: middle!important;
+}
+
+td.activated {
+    padding: 0!important;
+    font-size: 20px;
+    color: $activatedColor;
+}
+
+td.deactivated {
+    padding: 0!important;
+    font-size: 20px;
+    color: $deactivatedColor;
+}
+
+.tooltip > .tooltip-inner {
+    max-width: 200px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 3px 8px 5px 8px;
+    line-height: 1.4;
+}
+
+/* Navigacne menu - TOP */
+
+.navbar {
+    border: none;
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+.navbar .navbar-header .navbar-toggle {
+    margin-top: 15px;
+    margin-right: 15px;
+    border-color: $lightBorderColor;
+}
+
+.navbar .navbar-header .navbar-toggle .icon-bar {
+    background-color: $darkBorderColor;
+}
+
+.navbar .topbar {
+    position: absolute;
+    margin-top: 45px;
+    width: 100%;
+}
+
+.navbar .topbar .navbar-collapse {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.navbar .topbar ul li {
+    border-top: 1px solid $darkGrayColor;
+    border-bottom: 1px solid $darkGrayColor;
+    border-right: 1px solid $darkGrayColor;
+}
+
+.navbar .topbar ul li:first-of-type,
+.navbar .topbar ul li:nth-child(2) {
+    border-left: 1px solid $darkGrayColor;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.navbar .topbar ul li:last-of-type {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.navbar .topbar ul li.hide-on-desktop {
+    display: none;
+}
+
+.navbar .topbar ul li a.menu-item {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 13px;
+    background-color: $lightGrayColor;
+    color: #fff;
+    margin-bottom: 0;
+}
+
+.navbar .topbar ul li a.menu-item:hover,
+.navbar .topbar ul li a.active {
+    background-color: $darkGrayColor;
+}
+
+.navbar .topbar .logged-in-user {
+    margin: 0;
+    float: none;
+    padding: 10px 15px;
+}
+
+.navbar .topbar .logged-in-user div:first-of-type {
+    float: left;
+}
+
+/* Hlavicka - Logo */
+
+.header-image {
+    height: 45px;
+    margin: 7px 7px 7px 15px;
+    float: left;
+}
+
+/* Hlavicka - Nazov aplikacie */
+
+.header-title {
+    text-align: left;
+    margin: 18px 0 0 75px;
+    font-size: 18px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.header-title span {
+    font-weight: 300;
+    font-size: 13px;
+}
+
+/* Hlavicka - Prihlaseny pouzivatel */
+
+.navbar .logged-in-user {
+    text-align: right;
+    margin-top: 13px;
+    margin-right: 17px;
+    float: right;
+}
+
+.navbar .logged-in-user div:first-of-type {
+    font-weight: 500;
+}
+
+.navbar a.logout,
+.navbar a.logout:hover {
+    font-size: 13px;
+    color: $darkRedColor;
+}
+
+/* Strankovanie */
+
+.pagination {
+    margin: 15px 0 0 0;
+}
+
+.pagination > li > a {
+    border-color: $lightBorderColor;
+    color: $lightGrayColor;
+}
+
+.pagination > li > a:hover {
+    background-color: $darkTableBackgroundColor;
+    color: $darkGrayColor;
+}
+
+.pagination > li.active > a {
+    background-color: $lightGrayColor;
+    border-color: $lightGrayColor;
+}
+
+.pagination-count {
+    font-size: 13px;
+}
+
+/* Sweet Alert */
+
+.sweet-alert {
+    font-family: inherit;
+}
+
+.sweet-alert .icon.error {
+    border-color: $darkRedColor;
+}
+
+.sweet-alert .icon.error .line {
+    background-color: $darkRedColor;
+}
+
+.sweet-alert p {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.sweet-alert hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.sweet-alert .btn-primary {
+    /*color: $contrastTextColor!important;*/
+    font-size: 14px;
+    font-weight: 600;
+    padding: 7px 32px!important;
+}
+
+.sweet-alert .btn-primary:hover {
+   /*background-color: $mediumGrayColor!important;*/
+}
+
+.sweet-alert .btn-default {
+    /*border: 1px solid $mediumGrayColor;
+    color: $mediumGrayColor!important;*/
+    font-size: 14px;
+    font-weight: 600;
+    padding: 7px 32px!important;
+}
+
+.sweet-alert .btn-default:hover {
+    background-color: #fff!important;
+}
+
+.sweet-overlay {
+    z-index: 2000!important;
+}
+ /*check box*/
+
+.check-text {
+    position:absolute;
+    left:25px;
+}
+.check-box {
+  width: 20px;
+  position: relative;
+  left: -45%;
+  margin: 10px auto;
+}
+.check-box label {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: -webkit-linear-gradient(top, #868686 0%, #d4d4d4 100%);
+  background: linear-gradient(to bottom, #868686 0%, #d4d4d4 100%);
+  border-radius: 4px;
+  box-shadow: inset 0px 1px 1px #868686, 0px 1px 0px rgba(255, 255, 255, 0.4);
+}
+.check-box label:after {
+  content: '';
+  width: 13px;
+  height: 7px;
+  position: absolute;
+  top: 5px;
+  left: 4px;
+  border: 3px solid #fcfff4;
+  border-top: none;
+  border-right: none;
+  background: transparent;
+  opacity: 0;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+}
+.check-box label:hover::after {
+  opacity: 0.3;
+}
+.check-box input[type=checkbox] {
+  visibility: hidden;
+}
+.check-box input[type=checkbox]:checked + label:after {
+  opacity: 1;
+}
+.slider-margin {
+    margin-top: 10px;
+}
+ /*radio button*/
+ input[type=radio] {
+    margin-left: 45px;
+} 
+.radio-text {
+    margin-left: 10px;
+}
+.radio-btns {
+    margin-top: 5px;
+}
+
+.slider-input:disabled {
+    background: #fff;
+    border:0; 
+    color:#b9cd6d; 
+    font-weight:bold;
+    
+}
+
+#day-item-collapse {
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+}
+
+table.scrollbar {
+  width: 100%;
+  text-align: center;
+  min-width: 500px;
+  
+  margin-bottom: 20px;
+  
+}
+
+table.scrollbar tr {
+  border-bottom: 1px solid $lightBorderColor;
+  border-left: 1px solid $lightBorderColor;
+  border-right: 1px solid $lightBorderColor ;
+  height: 30px;
+  padding-top: 5px
+}
+
+table.scrollbar tbody {
+  height: 180px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+}
+
+table.scrollbar th,
+table.scrollbar td,
+table.scrollbar tr,
+table.scrollbar thead,
+table.scrollbar tbody {
+  display: block;
+  text-align: center;
+  
+}
+
+table.scrollbar td,
+table.scrollbar th {
+  width: 35%;
+  float: left;
+}
+
+table.scrollbar.alone td,
+table.scrollbar.alone th {
+  width: 100%;
+  float: left;
+}
+table.scrollbar.three td,
+table.scrollbar.three th {
+  width: 30%;
+  float: left;
+}
+
+table.scrollbar.three td:nth-child(2),
+table.scrollbar.three th:nth-child(2) {
+  width: 30%;
+  float: left;
+}
+
+table.scrollbar .last-td {
+    margin-right: 14px;
+    
+}
+
+table.scrollbar td:nth-child(2),
+table.scrollbar th:nth-child(2) {
+  width: 35%;
+  float: right;
+}
+
+
+table.scrollbar td:nth-child(3),
+table.scrollbar th:nth-child(3) {
+  width: 40%;
+  float: right;
+}
+
+table.scrollbar thead {
+  background-color: $lightGrayColor;
+  color: #fdfdfd;
+}
+
+/*drag & drop */
+
+.ui-sortable {
+    left: 25%;
+	width: 50%;
+	margin: 50px auto;
+	background-color: white;
+    list-style-type: none; 
+    padding: 0; 
+}
+.ui-sortable li.ui-state-default { 
+	height: 40px;
+    right: 7px;
+	line-height: 40px;
+	font-size: 1.4em; 
+	color: #000;
+	outline: 0;
+	padding: 0;
+	margin: 7px;
+	background: #fff;
+	font-size: 1.1em;
+	position: relative;
+	cursor: pointer;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.ui-sortable li.ui-state-default:hover,
+.ui-sortable li.ui-state-default:focus {
+    background-color: $lightTableBackgroundColor; 
+}
+
+.ui-sortable-placeholder {
+	border: 3px dashed #aaa;
+	height: 40px;
+    position: relative;
+	background: #f9f9f9;
+}
+.ui-sortable li.ui-state-default:after {
+	content: "\f0c9";
+	display: inline-block;
+	font-family: "FontAwesome";
+	position: absolute;
+	right: 18px;
+	top: 9px;
+	text-align: center;
+	line-height: 21px;
+	cursor: move;
+}
+
+/*search pre tabulku*/
+.results tr[visible='false']{
+  display:none;
+}
+
+.results tr[visible='true']{
+  display:block;
+}
+
+.counter{
+  padding:8px; 
+  color:#ccc;
+}
+
+.scrollStyle {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.select2-container {
+    display: inline-block;
+    display: block;
+    width:100% !important;
+}
+
+
+/* Responzivny dizajn */
+
+@media(max-width:991px) {
+    
+    .half-padding-right {
+        padding-right: 15px;
+    }
+    
+    .half-padding-left {
+        padding-left: 15px;
+    }
+   
+    
+}
+
+@media(min-width:991px) {
+    
+    /* Modalne okno */
+    
+    #item-modal > .modal-dialog {
+        width: 800px!important;
+    }
+    
+}
+
+@media(min-width:769px) {
+    
+    .nav-justified {
+        width: 380px;
+        margin: auto;
+    }
+    
+    /* Modalne okno */
+    
+    #item-modal > .modal-dialog {
+        width: 700px;
+    }
+}
+
+@media(max-width:768px) {
+    
+    /* Globalne */
+    
+    #bg {
+        height: 60px;
+        border-bottom: none;
+    }
+    
+    #wrapper {
+        padding: 0;
+    }
+    
+    #content-wrapper {
+        position: static;
+        margin: 0;
+        border: none;
+        border-bottom: 1px solid $lightBorderColor;
+        border-radius: 0;
+    }
+    
+    #content-wrapper h1 {
+        text-align: center;
+    }
+    
+    #content-wrapper.logged-out-user {
+        max-width: 1000px;
+    }
+
+    .hide-on-desktop {
+        display: block!important;
+    }
+    
+    .hide-on-mobile {
+        display: none!important;
+    }
+    
+    .show-on-mobile {
+        display: block!important;
+    }
+    
+    .btn-content-action {
+        width: 44px;
+    }
+
+    /* Navigacne menu */
+
+    .navbar .topbar {
+        position: static!important;
+        width: 100%!important;
+        margin-top: 0!important;
+    }
+    
+    .navbar .topbar ul li {
+        border: none!important;
+        border-top: 1px solid $lightBorderColor!important;
+        border-radius: 0!important;
+    }
+    
+    .navbar .topbar ul li:first-of-type {
+        background-color: #fff;
+        border: none!important;
+    }
+    
+    .navbar .topbar ul li:last-of-type {
+        border-bottom: 1px solid $lightBorderColor!important;
+    }
+    
+    .navbar .topbar ul li a.menu-item {
+        background-color: $lightrayColor;
+        color: #fff;
+        text-align: left;
+        padding: 10px 15px;
+    }
+    
+    .navbar .topbar ul li .logged-in-user a.menu-item {
+        background-color: #fff;
+        padding: 0;
+    }
+    
+    .navbar .topbar ul li .logged-in-user a.menu-item:hover {
+        background-color: #fff;
+    }
+    
+    .navbar .topbar ul li a.menu-item:hover {
+        background-color: $lightGrayColor;
+    }
+    
+    /* Hlavicka - Logo */
+    
+    .header-image {
+        margin-left: 15px;
+    }
+}

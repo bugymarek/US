@@ -1,0 +1,36 @@
+@{if model && model.pagination && model.pagination.visible}
+	<div class="text-center">
+		<nav class="hide-on-mobile">
+			<ul class="pagination without-bottom-margin">
+				@{if model.pagination.page > (model.pagination.max / 2 + 1)}
+					<li>
+						<a href="@{model.pagination.first().url}" aria-label="First"><span aria-hidden="true">&laquo;</span></a>
+					</li>
+				@{fi}
+				@{foreach m in model.pagination.prepare(8)}
+					<li@{if m.selected} class="active"@{fi}>
+						<a href="@{m.url}">@{m.page.format()}<span class="sr-only">Aktuálna</span></a>
+					</li>
+				@{end}
+				@{if model.pagination.count - model.pagination.page > (model.pagination.max / 2)}
+					<li>
+						<a href="@{model.pagination.last().url}" aria-label="Last"><span aria-hidden="true">&raquo;</span></a>
+					</li>
+				@{fi}
+			</ul>
+		</nav>
+		<nav class="show-on-mobile">
+			<ul class="pagination">
+				<li@{if !model.pagination.isPrev} class="disabled"@{fi}>
+					<a href="@{model.pagination.prev().url}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+				</li>
+				<li@{if !model.pagination.isNext} class="disabled"@{fi}>
+					<a href="@{model.pagination.next().url}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+				</li>
+			</ul>
+		</nav>
+		<div class="pagination-count">
+			@{(model.pagination.skip + 1).format()} - @{(model.pagination.skip + model.pagination.take).format()} z celkom @{model.pagination.items.format()}
+		</div>
+	</div>
+@{fi}

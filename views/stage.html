@@ -1,0 +1,44 @@
+@{meta('Festival | ' + config.name)}
+@{repository.active = 'stage'}
+<!-- Modal pre stejdž festivalu-->
+  <div id="stage-item-collapse" >
+      		<div class="stage-item-collapse">
+        		<h4 class="collapse-title">Nový&nbsp;stejdž&nbsp;festivalu</h4>
+      		</div>
+      		<div class="collapse-body">
+				<!-- Nazov festivalu -->
+				<div class="form-group ">
+					<label for="stage-name">Názov&nbsp;*</label>
+        			<input id="stage-name" class="form-control" type="text">
+				</div> 
+                <!--zoznam dni -->
+                <div clas="row form-group">
+                    <div class="col-xs-12">
+                        <h1>Program v daný deň</h1>
+                        <a class="btn btn-submit btn-content-action" data-toggle="modal" data-target="#day-item-modal">
+                            <span class="fa fa-plus" aria-hidden="true"></span>
+                            <span id="add-day-btn" class="hide-on-mobile">&nbsp;Pridať&nbsp;deň</span>
+                        </a>
+                     </div>
+               </div>
+                <table id="table-days" class="table with-margin table-bordered table-striped table-hover ">
+                    <thead>
+                        <tr>
+                            <th class="text-center col-sm-6 col-xs-10">Deň</th>
+                        </tr>
+                    </thead>
+                <tbody></tbody>
+                </table>
+				<input id="stage-item-id"  type="hidden">
+				<div class="infos">* povinný parameter</div>
+                <!--<label class="col-sm-12"  type="text" >@{JSON.stringify(model.festival.stageSchedules[0].days)}</label>-->
+      		</div>
+      		<div class="modal-footer">
+				<div id="stage-confirm-delete-item" class="confirm-delete-item">Naozaj chcete odstrániť stejdž festivalu?</br></div>
+				<button id="stage-delete-item" type="button" class="btn btn-delete">Odstrániť</button>
+                <button id="stage-submit-item" type="button" class="btn btn-submit">Uložiť</button>
+        		<button type="button" class="btn btn-normal" data-dismiss="modal">Zrušiť</button>
+      		</div>
+    	</div>
+  	</div>
+</div>

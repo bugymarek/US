@@ -1,0 +1,132 @@
+@{meta('Administratory | ' + config.name)} 
+@{head('administrators.js')} 
+@{head('moment.min.js')}
+@{repository.active = 'administrators'}
+
+<div clas="row">
+    <div class="col-xs-12">
+        <h1>Administrátori</h1>
+        <button class="btn btn-submit btn-content-action" data-toggle="modal" data-target="#item-modal">
+            <span class="fa fa-user-plus" aria-hidden="true"></span>
+            <span class="hide-on-mobile">&nbsp;Pridať &nbsp;používateľa</span>
+        </button>
+    </div>
+</div>
+
+
+@{if model && Array.isArray(model.administrators) && model.administrators.length > 0}
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th class="text-left col-sm-2 col-xs-10">Meno</th>
+            <th class="text-left col-sm-2 hide-on-mobile">Email</th>
+            <th class="text-left col-sm-2 hide-on-mobile">Oprávnenie</th>
+            <th class="text-left col-sm-2 hide-on-mobile">Vytvorený</th>
+            <th class="text-left col-sm-2 hide-on-mobile">Aktualizovaný</th>
+            <th class="text-left col-sm-2 hide-on-mobile">Posledná&nbsp;aktivita</th>
+            <th class="text-center col-sm-1 col-xs-2">Aktivácia</th>
+            <tr>
+    </thead>
+    <tbody>
+        @{foreach administrator in model.administrators}
+        <tr class="item-detail" data-toggle="modal" data-target="#item-modal" data-item="@{JSON.stringify({festivals: model.festivals, administrator: administrator})}">
+            <td class="text-left">@{administrator.name || '-'}</td>
+            <td class="text-left hide-on-mobile">@{administrator.email || '-'}</td>
+            <td class="text-left hide-on-mobile">@{administrator.permissions}</td>
+            <td class="text-left hide-on-mobile local-datetime">@{administrator.created}</td>
+            <td class="text-left hide-on-mobile local-datetime">@{administrator.updated}</td>
+            <td class="text-left hide-on-mobile local-datetime">@{administrator.lastActivity}</td>
+            <td class="text-center @{activationCss(administrator.isActive)}">
+                <span data-toggle="tooltip" data-placement="left" title="@{activationText(administrator.isActive, 'Aktívny', 'Neaktívny')}"
+                class="fa @{activationMarker(administrator.isActive)} fa-1x" aria-hidden="true"></span>
+            </td>
+        </tr>
+        @{end}
+    </tbody>
+</table>
+
+@{view('~/partials/pagination', model)} @{else}
+<div>Aktuálne neevidujeme žiadných používateľov.</div>
+@{fi}
+
+<div id="item-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Nový&nbsp;používateľ</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Email pouzivatela -->
+                <div class="form-group">
+                    <label for="user-email">Email&nbsp;*</label>
+                    <input id="user-email" class="form-control" type="text">
+                </div>
+                <!-- Meno pouzivatela -->
+                <div class="form-group">
+                    <label for="user-name">Meno&nbsp;*</label>
+                    <input id="user-name" class="form-control" type="text">
+                </div>
+                <!--zoznam festivalov-->
+                <div id="section-administrator-festivals">
+                    <div clas="row form-group">
+                        <div class="col-xs-6">
+                            <h1>Spravované festivaly</h1>
+                        </div>
+                        <i class="col-xs-1 fa fa-search fa-2x" aria-hidden="true"></i>     
+                    <div class="col-xs-5 form-group">
+                        <input  id="festival-search-name" type="text" class=" search form-control" placeholder="Názov festivalu">
+                    </div>
+                    </div>
+                    
+                    @{if model && Array.isArray(model.festivals) && model.festivals.length > 0}
+                    <table id="table-administrator-festivals" class="scrollbar with-margin table-striped results">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-sm-10 col-xs-10">Názov</th>
+                                <th class="text-center col-sm-1 col-xs-2">Vyber</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    @{else}
+                    <div id="festivals-empty">Aktuálne neevidujeme žiadné festivaly. Vytvorte festival v sekcii festivaly</div>
+                    @{fi}
+                </div>
+                
+                <div class="row">
+                    <!--checkbox uzivatelskej aktivity-->
+                    <div class="col-sm-6 checkbox">
+                        <label>
+                            <input id="user-activated" type="checkbox" checked>Aktívny
+                        </label>
+                    </div>
+                    <!--radio buttons group uzivatelove opravenie-->
+                    <div class="col-sm-6 text-right ">
+                        <div class="radio-btns">
+                            <input type="radio" name="permissions" value="ADMIN" id="ADMIN" checked >
+                            <span class="radio-text">ADMIN</span>
+
+                            <input type="radio" name="permissions" value="SUPERADMIN" id="SUPERADMIN" >
+                            <span class="radio-text">SUPERADMIN</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <input id="item-id" type="hidden">
+                <div id="error"></div>
+                <div class="additional-infos">* povinný parameter</div>
+                <div class="well without-bottom-margin">
+                    <p>Po úspešnom vytvorení používateľa bude na zadanú emailovú adresu odoslané prístupové heslo.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div hidden id="confirm-delete-item" class="confirm-delete-item">Naozaj chcete odstrániť používateľa?</br>
+                </div>
+                <button id="delete-item" type="button" class="btn btn-delete">Odstrániť</button>
+                <button id="submit-item" type="button" class="btn btn-submit">Uložiť</button>
+                <button type="button" class="btn btn-normal" data-dismiss="modal">Zrušiť</button>
+            </div>
+        </div>
+    </div>
+</div>

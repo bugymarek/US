@@ -1,0 +1,25 @@
+/css/bootstrap.min.css			: /css/bootstrap.min.css?v=1
+/css/font-awesome.min.css	    : /css/font-awesome.min.css?v=1
+/css/sweetalert2.min.css        : /css/sweetalert2.min.css?v=1
+/css/styles.css					: /css/styles.css?v=6
+/css/jquery-ui.min.css		    : /css/jquery-ui.min.css?v=1
+/css/select2.min.css		    : /css/select2.min.css?v=1
+/css/timepicker.css             : /css/timepicker.css?v=1
+
+/img/logo.png					: /img/logo.png?v=1
+
+/js/bootstrap.min.js			: /js/bootstrap.min.js?v=1
+/js/timepicker.js			    : /js/timepicker.js?v=1
+/js/jquery.min.js				: /js/jquery.min.js?v=1
+/js/sweetalert2.min.js          : /js/sweetalert2.min.js?v=1
+/js/moment.min.js               : /js/moment.min.js?v=1
+/js/locationpicker.min.js       : /js/locationpicker.min.js?v=1
+/js/jquery-ui.min.js            : /js/jquery-ui.min.js?v=1
+/js/select2.min.js              : /js/select2.min.js?v=1
+/js/administrators.js           : /js/administrators.js?v=4
+/js/scripts.js					: /js/scripts.js?v=1
+/js/band.js					    : /js/band.js?v=5
+/js/bands.js					: /js/bands.js?v=1
+/js/festival.js					: /js/festival.js?v=8
+/js/festivals.js			    : /js/festivals.js?v=3
+/js/login.js					: /js/login.js?v=1

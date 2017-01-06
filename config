@@ -1,0 +1,6 @@
+name                            : Bakalarka
+version                         : 1.0
+secret                          : e980c6704a56152532682d29c5d331c067ed5e59
+cookie							: __user
+allow-custom-titles				: true
+address							: https://bakalarka.najkratsiaCesta.com
