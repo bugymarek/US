@@ -8,7 +8,8 @@
         @{head}
     </head>
     <body>
-        <div id="bg"@{if !user} class="logged-out-user"@{fi}>
+        <div id="bg">
+        </div>
             <div id="wrapper">
                 <nav class="navbar" role="navigation">
                     <div class="navbar-header">
@@ -23,16 +24,18 @@
                         @{image('logo.png', { class: 'header-image', alt: config.name})}
                         <div class="header-title">@{config.name}<span class="hide-on-mobile"> administračné rozhranie </span></div>
                     </div>
-                    @{if user}
+                         @{if user}
                         <div class="logged-in-user hide-on-mobile">
                             <div>@{user && user.name ? user.name : 'Neznámy'}</div> 
                             <div>
                                 <a class="logout"" href="/">Odhlásiť</a>
                             </div> 
                         </div>
+                        @{fi}
                         <div class="topbar" role="navigation">
                             <div class="collapse navbar-collapse">
                                 <ul class="nav nav-justified">
+                                    @{if user}
                                     <li class="hide-on-desktop">
                                         <div class="logged-in-user">
                                             <div>@{user && user.name ? user.name : 'Neznámy'}</div>
@@ -41,32 +44,32 @@
                                             </div>
                                         </div>
                                     </li>
+                                    @{fi}
                                     <li>
-                                        <a class="menu-item @{if repository.active == 'festivals'} active@{fi}" href="/">
-                                            <i class="fa fa-list" aria-hidden="true"></i> Festivaly
+                                        <a class="menu-item @{if repository.active == 'domov'} active@{fi}" href="/">
+                                            <i class="fa fa-home" aria-hidden="true"></i> Domov
+                                        </a>
+                                    </li>   
+                                    @{if !user}
+                                    <li>
+                                        <a class="menu-item @{if repository.active == 'administrators'} active@{fi}" href="/login">
+                                            <i class="fa fa-cogs" aria-hidden="true"></i> Administrácia
                                         </a>
                                     </li>
-                                     <li>
-                                        <a class="menu-item @{if repository.active == 'bands'} active@{fi}" href="/bands">
-                                            <i class="fa fa-music" aria-hidden="true"></i> Kapely
-                                        </a>
-                                    </li>
-                                     @{if user.permissions === 'SUPERADMIN'}
+                                    @{fi}                                
+                                    @{if user && user.permissions === 'SUPERADMIN'}
                                     <li>
                                         <a class="menu-item @{if repository.active == 'administrators'} active@{fi}" href="/administrators">
                                             <i class="fa fa-users" aria-hidden="true"></i> Administrátori
                                         </a>
                                     </li>
-                                    @{fi}
+                                    @{fi}   
                                 </ul>
                             </div>
-                        </div>
-                    @{fi}
-                </nav>
-                <div id="content-wrapper"@{if !user} class="logged-out-user"@{fi}>
+                        </div>                 
+                </nav>              
                     @{body}
-                </div>
             </div>
-        </div>
+   
     </body>
 </html>

@@ -7,7 +7,7 @@ $(document).ready(function() {
 			method: 'POST',
 			url: '/logout'
 		}).always(function() {
-			window.location.replace('/login');
+			window.location.replace('/');
 		});
 	});
 	

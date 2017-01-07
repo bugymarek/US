@@ -1,0 +1,44 @@
+ @{meta('Zoznam | ' + config.name)} 
+ @{repository.active = 'domov'}
+ <div id="content-wrapper">
+<div clas="row">
+	<div class="col-xs-12">
+		<h1>Festivaly</h1> 
+		<a class="btn btn-submit btn-content-action @{if repository.active == 'festival'} active@{fi}" href="/festival">
+			<span class="fa fa-plus" aria-hidden="true"></span>
+			<span class="hide-on-mobile">&nbsp;Pridať &nbsp;festival</span>
+		</a>
+	</div>
+</div>
+
+@{if model && Array.isArray(model.festivals) && model.festivals.length > 0}
+<table class="table table-bordered table-striped table-hover">
+	<thead>
+		<tr>
+			<th class="text-center col-sm-4 col-xs-10">Názov</th>
+			<th class="text-center col-sm-3 hide-on-mobile">Dátum od</th>
+			<th class="text-center col-sm-3 hide-on-mobile">Dátum do</th>
+			<th class="text-center col-sm-2 hide-on-mobile" style="width:150px;">Obrázok</th>
+		</tr>
+	</thead>
+	<tbody>
+		@{foreach festival in model.festivals} @{if Array.isArray(user.festivals) && user.festivals.indexOf(festival._id.toString())>=0
+		}
+		<tr data-item="@{festival._id.toString()}">
+			<td class="text-center item-detail">@{festival.name || '-'}</td>
+			<td class="text-center item-detail hide-on-mobile local-datetime">@{festival.dateFrom || '-'}</td>
+			<td class="text-center item-detail hide-on-mobile local-datetime">@{festival.dateTo || '-'}</td>
+			<td class="text-center hide-on-mobile">
+				<a href="@{festival.image || 'https://s3.eu-central-1.amazonaws.com/defibrillator/placeholder.png'}">
+					<img src="@{festival.image || 'https://s3.eu-central-1.amazonaws.com/defibrillator/placeholder.png'}" class="thumb">
+				</a>
+			</td>
+		</tr>
+		@{fi} @{end}
+	</tbody>
+</table>
+
+@{view('~/partials/pagination', model)} @{else}
+<div>Aktuálne neevidujeme žiadné festivaly.</div>
+@{fi}
+</div>
