@@ -1,16 +1,16 @@
 /* Farby */
 
-$lightBackgroundColor: #ededed;
-$darkBackgroundColor: #dedede;
+$lightBackgroundColor: #e6f3ff;
+$darkBackgroundColor: #cce6ff;
 
 $lightRedColor: #d9534f;
 $darkRedColor: #d43f3a;
 
-$lightGrayColor: #a3a3a3;
-$darkGrayColor: #868686;
+$lightBlueColor: #4da6ff;
+$darkBlueColor:  #0073e6;
 
-$lightBorderColor: #d4d4d4;
-$darkBorderColor: #888888;
+$lightBorderColor: #cce0ff;
+$darkBorderColor: #b3d1ff;
 
 $lightTableBackgroundColor: #f9f9f9;
 $darkTableBackgroundColor: #f5f5f5;
@@ -23,9 +23,9 @@ $deactivatedColor: #d9534f;
 
 body {
     margin: 0;
+    margin-top: 5px;
     padding: 0;
     background-color: $lightBackgroundColor;
-    border-top: 3px solid $lightGrayColor;
     font-size: 14px;
     font-family: 'Roboto', sans-serif;
     font-smoothing: antialiased;
@@ -36,13 +36,14 @@ body {
 }
 
 #bg {
-    position: absolute;
+    position: inherit;
     top: 3px;
     left: 0;
     width: 100%;
-    height: 65px;
+    height: 165px;
     background-color: #fff;
-    border-bottom: 1px solid $lightBorderColor;
+    border: 1px solid #cce0ff;
+    border-radius: 4px;
 }
 
 #bg.logged-out-user {
@@ -58,7 +59,6 @@ body {
 
 #content-wrapper {
     position: inherit;
-    margin-top: 42px;
     margin-bottom: 15px;
     padding: 15px;
     background-color: #fff;
@@ -224,31 +224,31 @@ body {
 /* Tlacidla */
 
 .btn-submit {
-    background-color: $lightGrayColor;
-    border-color: $darkGrayColor;
+    background-color: $lightBlueColor;
+    border-color: $darkBlueColor;
     color: #fff;
     float: right;
 }
 
 .btn-submit:hover,
 .btn-submit:focus {
-    background-color: $darkGrayColor;
-    border-color: $darkGrayColor;
+    background-color: $darkBlueColor;
+    border-color: $darkBlueColor;
     color: #fff;
 }
 
 .btn-normal {
     background-color: rgba(255, 255, 255, 0.8);
-    border-color: $lightGrayColor;
-    color: $lightGrayColor;
+    border-color: $lightBlueColor;
+    color: $lightBlueColor;
 }
 
 
 .btn-normal:hover,
 .btn-normal:focus {
     background-color: #fff;
-    border-color: $darkGrayColor;
-    color: $darkGrayColor;
+    border-color: $darkBlueColor;
+    color: $darkBlueColor;
 }
 
 .btn-delete {
@@ -328,6 +328,7 @@ td.deactivated {
     border: none;
     margin-bottom: 0;
     border-radius: 0;
+    top:-165px;
 }
 
 .navbar .navbar-header .navbar-toggle {
@@ -342,7 +343,7 @@ td.deactivated {
 
 .navbar .topbar {
     position: absolute;
-    margin-top: 45px;
+    margin-top: 145px;
     width: 100%;
 }
 
@@ -352,14 +353,14 @@ td.deactivated {
 }
 
 .navbar .topbar ul li {
-    border-top: 1px solid $darkGrayColor;
-    border-bottom: 1px solid $darkGrayColor;
-    border-right: 1px solid $darkGrayColor;
+    border-top: 1px solid $darkBlueColor;
+    border-bottom: 1px solid $darkBlueColor;
+    border-right: 1px solid $darkBlueColor;
 }
 
 .navbar .topbar ul li:first-of-type,
 .navbar .topbar ul li:nth-child(2) {
-    border-left: 1px solid $darkGrayColor;
+    border-left: 1px solid $darkBlueColor;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
@@ -377,14 +378,14 @@ td.deactivated {
     text-transform: uppercase;
     font-weight: 600;
     font-size: 13px;
-    background-color: $lightGrayColor;
+    background-color: $lightBlueColor;
     color: #fff;
     margin-bottom: 0;
 }
 
 .navbar .topbar ul li a.menu-item:hover,
 .navbar .topbar ul li a.active {
-    background-color: $darkGrayColor;
+    background-color: $darkBlueColor;
 }
 
 .navbar .topbar .logged-in-user {
@@ -400,9 +401,10 @@ td.deactivated {
 /* Hlavicka - Logo */
 
 .header-image {
-    height: 45px;
-    margin: 7px 7px 7px 15px;
-    float: left;
+    position: relative;
+    left: 67%;
+    height: 138px;
+    width: 228px;
 }
 
 /* Hlavicka - Nazov aplikacie */
@@ -448,17 +450,17 @@ td.deactivated {
 
 .pagination > li > a {
     border-color: $lightBorderColor;
-    color: $lightGrayColor;
+    color: $lightBlueColor;
 }
 
 .pagination > li > a:hover {
     background-color: $darkTableBackgroundColor;
-    color: $darkGrayColor;
+    color: $darkBlueColor;
 }
 
 .pagination > li.active > a {
-    background-color: $lightGrayColor;
-    border-color: $lightGrayColor;
+    background-color: $lightBlueColor;
+    border-color: $lightBlueColor;
 }
 
 .pagination-count {
@@ -666,7 +668,7 @@ table.scrollbar th:nth-child(3) {
 }
 
 table.scrollbar thead {
-  background-color: $lightGrayColor;
+  background-color: $lightBlueColor;
   color: #fdfdfd;
 }
 
@@ -791,7 +793,7 @@ table.scrollbar thead {
     /* Globalne */
     
     #bg {
-        height: 60px;
+        height: 100%;
         border-bottom: none;
     }
     
@@ -832,7 +834,10 @@ table.scrollbar thead {
     }
 
     /* Navigacne menu */
-
+    .navbar {
+        top: 0;
+    }
+    
     .navbar .topbar {
         position: static!important;
         width: 100%!important;
@@ -871,7 +876,7 @@ table.scrollbar thead {
     }
     
     .navbar .topbar ul li a.menu-item:hover {
-        background-color: $lightGrayColor;
+        background-color: $lightBlueColor;
     }
     
     /* Hlavicka - Logo */

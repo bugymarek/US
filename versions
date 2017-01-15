@@ -18,8 +18,4 @@
 /js/select2.min.js              : /js/select2.min.js?v=1
 /js/administrators.js           : /js/administrators.js?v=4
 /js/scripts.js					: /js/scripts.js?v=1
-/js/band.js					    : /js/band.js?v=5
-/js/bands.js					: /js/bands.js?v=1
-/js/festival.js					: /js/festival.js?v=8
-/js/festivals.js			    : /js/festivals.js?v=3
 /js/login.js					: /js/login.js?v=1

@@ -8,21 +8,18 @@
         @{head}
     </head>
     <body>
-        <div id="bg">
-        </div>
+        
             <div id="wrapper">
+                <div id="bg" class="hide-on-mobile">@{image('logo2.jpg', { class: 'header-image', alt: config.name})}</div>
                 <nav class="navbar" role="navigation">
                     <div class="navbar-header">
-                        @{if user}
+                        
                             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                                 <span class="sr-only">Toggle navigation</span>
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
-                            </button>
-                        @{fi}
-                        @{image('logo.png', { class: 'header-image', alt: config.name})}
-                        <div class="header-title">@{config.name}<span class="hide-on-mobile"> administračné rozhranie </span></div>
+                            </button>                          
                     </div>
                          @{if user}
                         <div class="logged-in-user hide-on-mobile">
@@ -45,14 +42,15 @@
                                         </div>
                                     </li>
                                     @{fi}
+                                    <li class="hide-on-desktop"></li>
                                     <li>
-                                        <a class="menu-item @{if repository.active == 'domov'} active@{fi}" href="/">
+                                        <a class="menu-item @{if repository.active == 'home'} active@{fi}" href="/">
                                             <i class="fa fa-home" aria-hidden="true"></i> Domov
                                         </a>
                                     </li>   
                                     @{if !user}
                                     <li>
-                                        <a class="menu-item @{if repository.active == 'administrators'} active@{fi}" href="/login">
+                                        <a class="menu-item @{if repository.active == 'login'} active@{fi}" href="/login">
                                             <i class="fa fa-cogs" aria-hidden="true"></i> Administrácia
                                         </a>
                                     </li>
