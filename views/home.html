@@ -1,44 +1,136 @@
- @{meta('Domov | ' + config.name)} 
- @{repository.active = 'home'}
- <div id="content-wrapper">
-<div clas="row">
-	<div class="col-xs-12">
-		<h1>Festivaly</h1> 
-		<a class="btn btn-submit btn-content-action @{if repository.active == 'festival'} active@{fi}" href="/festival">
-			<span class="fa fa-plus" aria-hidden="true"></span>
-			<span class="hide-on-mobile">&nbsp;Pridať &nbsp;festival</span>
-		</a>
-	</div>
-</div>
+ @{meta('Domov | ' + config.name)} @{repository.active = 'home'} @{head('home.js')}
+<div id="content-wrapper">
+    <!--Oblast mapy-->
+    @{if model && Array.isArray(model.maps) && model.maps.length > 0}
+    <div class="col-md-3">
+        <div class="dropdown ">
+            <button class=" dropbtn">Vyber mapu</button>
+            <div class="dropdown-content">
+                @{foreach map in model.maps}
+                <a class="map" data-item="@{JSON.stringify(map)}">@{map.nazov}</a> @{end}
+            </div>
+        </div>
+    </div>
+    @{if model.maps.map(function(e) { return e.nazov; }).indexOf('Univerzita')>=0}
+    <div class="text-center col-md-12">
+        <h1 id="map-name" class="collapse-title">@{model.maps[model.maps.map(function(e) { return e.nazov; }).indexOf('Univerzita')].nazov}</h1>
+    </div>
+    <div id="buttons" class="col-md-1 text-right"></div>
+    <div class="col-md-11">
+        <div class="imgScroll scrollbarStyle">
+            <img class="mySlides" src="@{model.maps[model.maps.map(function(e) { return e.nazov; }).indexOf('Univerzita')].url}">
+        </div>
+    </div>
+    @{else}
+    <div class="text-center col-md-12">
+        <h1 class="collapse-title">Vytvorte mapu s názvom Univerzita</h1>
+    </div>
+    @{fi} @{else}
+    <div class="text-center col-md-12">
+        <h1 class="collapse-title">V administrácii pridajte mapu</h1>
+    </div>
+    @{fi}
+    
+    <!--Oblast vyber budovy z-->
+    <div class="text-center col-md-6">
 
-@{if model && Array.isArray(model.festivals) && model.festivals.length > 0}
-<table class="table table-bordered table-striped table-hover">
-	<thead>
-		<tr>
-			<th class="text-center col-sm-4 col-xs-10">Názov</th>
-			<th class="text-center col-sm-3 hide-on-mobile">Dátum od</th>
-			<th class="text-center col-sm-3 hide-on-mobile">Dátum do</th>
-			<th class="text-center col-sm-2 hide-on-mobile" style="width:150px;">Obrázok</th>
-		</tr>
-	</thead>
-	<tbody>
-		@{foreach festival in model.festivals} @{if Array.isArray(user.festivals) && user.festivals.indexOf(festival._id.toString())>=0
-		}
-		<tr data-item="@{festival._id.toString()}">
-			<td class="text-center item-detail">@{festival.name || '-'}</td>
-			<td class="text-center item-detail hide-on-mobile local-datetime">@{festival.dateFrom || '-'}</td>
-			<td class="text-center item-detail hide-on-mobile local-datetime">@{festival.dateTo || '-'}</td>
-			<td class="text-center hide-on-mobile">
-				<a href="@{festival.image || 'https://s3.eu-central-1.amazonaws.com/defibrillator/placeholder.png'}">
-					<img src="@{festival.image || 'https://s3.eu-central-1.amazonaws.com/defibrillator/placeholder.png'}" class="thumb">
-				</a>
-			</td>
-		</tr>
-		@{fi} @{end}
-	</tbody>
-</table>
+        <div class="text-left col-md-6">
+            <div class="dropdown ">
+                <button class=" dropbtn">Vyber budovu z</button>
+                <div class="dropdown-content">
+                 @{if model && Array.isArray(model.buildings) && model.buildings.length > 0}   
+                    @{foreach building in model.buildings}
+                    <a class="roomFrom" data-item="@{JSON.stringify(building)}">@{building.nazov}</a> @{end}
+                 @{fi}
+                </div>
+            </div>
+        </div>
+        <i class="col-xs-1 fa fa-search fa-2x" aria-hidden="true"></i>
+        <div class="col-xs-5 form-group">
+            <input id="roomFrom-search-name" type="text" class=" search form-control" placeholder="Názov miestnosti">
+        </div>
 
-@{view('~/partials/pagination', model)} @{else}
-<div>Aktuálne neevidujeme žiadné festivaly.</div>
-@{fi}
+        <div class="text-left col-md-12">
+            <table id="table-roomFrom" class="scrollbar alone table-hover with-margin table-striped results">
+                <thead>
+                    <tr>
+                        <th class="text-center col-sm-10 col-xs-10">Miestnosti v budove <span id="nameOfBuildingFrom"   ></span></th>
+                    </tr>
+                </thead>
+                <tbody class="scrollbarStyle table-bordered">
+                    <tr>
+                        <td class="text-center col-sm-10 col-xs-10"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-sm-10 col-xs-10"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-sm-10 col-xs-10"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-sm-10 col-xs-10"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-sm-10 col-xs-10"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!--Oblast vyber budovy do-->
+    <div class="text-center col-md-6">
+        <div class="text-left col-md-6">
+            <div class="dropdown ">
+                <button class=" dropbtn">Vyber budovu do</button>
+                <div class="dropdown-content">
+                 @{if model && Array.isArray(model.buildings) && model.buildings.length > 0}   
+                    @{foreach building in model.buildings}
+                    <a class="roomTo" data-item="@{JSON.stringify(building)}">@{building.nazov}</a> @{end}
+                 @{fi}
+                </div>
+            </div>
+        </div>
+        <i class="col-xs-1 fa fa-search fa-2x" aria-hidden="true"></i>
+        <div class="col-xs-5 form-group">
+            <input id="roomTo-search-name" type="text" class=" search form-control" placeholder="Názov miestnosti">
+        </div>
+
+        <div class="text-left col-md-12">
+            <table id="table-roomTo" class="scrollbar alone table-hover with-margin table-striped results">
+                <thead>
+                    <tr>
+                        <th class="text-center col-sm-10 col-xs-10">Miestnosti v budove <span id="nameOfBuildingTo"></span></th>
+                    </tr>
+                </thead>
+                <tbody class="scrollbarStyle table-bordered">
+                    <tr>
+                        <td class="text-center col-sm-10 col-xs-10"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-sm-10 col-xs-10"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-sm-10 col-xs-10"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-sm-10 col-xs-10"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-sm-10 col-xs-10"></td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--Oblast hladania najkratsiej cesty -->
+    <div class="text-center col-md-12">
+        <a class="btn btn-normal" href="/festival">
+            <span class="fa fa-plus" aria-hidden="true"></span>
+            <span >&nbsp;Vyhľadaj&nbsp;cestu</span>
+        </a>
+    </div>
 </div>
