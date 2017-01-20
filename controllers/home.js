@@ -3,6 +3,7 @@ var Areal = GETSCHEMA('Areal');
 
 exports.install = function () {
     F.route('/', viewDomov, ['get']);
+    F.route('/building/{id}', getRoomsOfBuilding, ['get']);
 };    
 
 
@@ -25,10 +26,8 @@ function viewDomov() {
         if (Array.isArray(context.results.buildings)) {
             context.results.buildings.forEach(function (building) {
                 delete building.hrany;
-                // vyberie vrcholy len typu miestnost
-                for (var i = building.vrcholy.length - 1; i >= 0; i--) {
-                    if (building.vrcholy[i].typ !== "miestnost") building.vrcholy.splice(i, 1);
-                }
+                delete building.vrcholy;
+                delete building.budova;
             });
         }
         return self.view('home', context.results);
@@ -71,5 +70,31 @@ function loadBuildings(next) {
         }
         self.results.buildings = buildings;
         return next();
+    });
+}
+
+// vrati budovu podla id s jej miestnstami.
+function getRoomsOfBuilding(id) {
+    var self = this;
+    id = U.parseObjectID(id);
+    if (!id) {
+        return self.throw400(new ErrorBuilder().push('errorAreal-unableToGet'));
+    }
+    Areal.get({
+        _id: id
+    }, function (err, model) {
+        if (err) {
+            return self.throw500(err);
+        }
+        console.log(model);
+        if (!model || !model._id) {
+            return self.throw404(new ErrorBuilder().push('errorAreal-unableToGet'));
+        }
+            delete model.hrany;
+            // vyberie vrcholy len typu miestnost
+            for (var i = model.vrcholy.length - 1; i >= 0; i--) {
+                if (model.vrcholy[i].typ !== "miestnost") model.vrcholy.splice(i, 1);
+            }
+        return self.json(model);
     });
 }

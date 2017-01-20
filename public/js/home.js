@@ -6,13 +6,12 @@ $(document).ready(function () {
     // podla slaceneho tlacidla sa zmeni obrazok
     $('#buttons').on('click', '.btn-normal', currentDiv);
     // nacitanie tabulky miestnosti pre budovu Z
-    $('.roomFrom').on('click', onDropdownBuildingItemClick('#nameOfBuildingFrom', '#table-roomFrom'));
+    $('.roomFrom').on('click', onDropdownBuildingItemClick('#nameOfBuildingFrom', 'roomFrom'));
     // nacitanie tabulky miestnosti pre budovu do
-    $('.roomTo').on('click', onDropdownBuildingItemClick('#nameOfBuildingTo', '#table-roomTo'));
+    $('.roomTo').on('click', onDropdownBuildingItemClick('#nameOfBuildingTo', 'roomTo'));
     // vyhladavanie v tabulkach
     $("#roomFrom-search-name").keyup(search('#roomFrom-search-name', '#table-roomFrom'));
-    $("#roomTo-search-name").keyup(search('#roomTo-search-name', '#table-roomTo'));
-    
+    $("#roomTo-search-name").keyup(search('#roomTo-search-name', '#table-roomTo'));   
     // nastavenie nazvu miestnoti po kliknuti
     $('#table-roomFrom').on('click', 'tbody tr', onRoomItemOfTable('#roomFrom')); 
     $('#table-roomTo').on('click', 'tbody tr', onRoomItemOfTable('#roomTo'));   
@@ -23,7 +22,7 @@ $(document).ready(function () {
  */
 function onDropdownMapClick() {
     // zmen nazov mapy
-    var map = $(this).data().item;
+    var map = $(this).data().item;  
     $('#map-name').text(map.nazov); 
       
     // pridanie tlacidiel pre poschodia
@@ -79,24 +78,43 @@ function showDivs(n) {
 // nacitanie tabulky miestnosti pre budovu Z
 function onDropdownBuildingItemClick(idNameOfBuilding, idTableOfRooms) {
     return function() {
-        var building = $(this).data().item;
-        //nastavenie textu a triedy pre budovu v hlavicke tabulky 
+        var buildingID = $(this).data().item._id;
+    var url = '/building/' + buildingID;
+	$.ajax({
+		method: 'get',
+		url: url
+	}).done(function (res) {
+         //nastavenie textu a triedy pre budovu v hlavicke tabulky 
         $(idNameOfBuilding).empty();
         $(idNameOfBuilding).addClass('nameOfBuilding');
-        $(idNameOfBuilding).append(building.nazov);
+        $(idNameOfBuilding).append(res.nazov);
         //vymaze telo tabulky
-        $(idTableOfRooms + ' tbody').empty();
-        if (building.vrcholy && Array.isArray(building.vrcholy) && building.vrcholy.length > 0) {
+        $('#table-' + idTableOfRooms + ' tbody').empty();
+        //vymazanie input vyhladavania\
+        $('#' + idTableOfRooms + '-search-name').val('');
+        if (res.vrcholy && Array.isArray(res.vrcholy) && res.vrcholy.length > 0) {
             // pridanie miestnosti do tabulky
-            building.vrcholy.forEach(function (element) {
+            res.vrcholy.forEach(function (element) {
                 //ak je to miestnost
                 var html = '<tr><td name="roomItem" class="text-center col-sm-10 col-xs-10" data-item="' + element.nazov + '">' + element.nazov + '</td></tr>';
                 var row = $(html);
                 row.data('item', element.nazov);
-                $(idTableOfRooms + ' tbody').append(row);
+                $('#table-' + idTableOfRooms + ' tbody').append(row);
             });
         }
-        }
+	}).fail(function (res) {
+		var message = '';
+		if (res && res.responseJSON && Array.isArray(res.responseJSON.errors)) {
+			if (res.responseJSON.errors.length > 0) {
+				res.responseJSON.errors.forEach(function (e) {
+					message += e.error + '<br/>';
+					onAttributeError(e);
+				});
+			}
+		}
+        showErrorMessage(message || 'Nepodarilo sa načítať budovu.');
+	});      
+   }
     
 }
 
@@ -134,4 +152,36 @@ function onRoomItemOfTable(searchInput) {
         $(searchInput + "-search-name").focus();
     }
     
+}
+
+/**
+ * Vytvorenie noveho pouzivatela alebo aktualizacia existujuceho.
+ */
+function onSubmitItemClick(id) {
+    console.log(id);
+    var url = '/building/' + id;
+        console.log(url);
+	$.ajax({
+		method: 'get',
+		url: url,
+		data: JSON.stringify(id),
+		contentType: 'application/json',
+		dataType: 'json'
+	}).done(function (res) {
+        
+		console.log(res);
+	}).fail(function (res) {
+		var message = '';
+		if (res && res.responseJSON && Array.isArray(res.responseJSON.errors)) {
+			if (res.responseJSON.errors.length > 0) {
+				res.responseJSON.errors.forEach(function (e) {
+					message += e.error + '<br/>';
+					onAttributeError(e);
+				});
+			}
+		}
+        //showErrorMessage(message || 'Nepodarilo sa uložiť uživateľa');
+	}).always(function () {
+
+	});
 }

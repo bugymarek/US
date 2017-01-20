@@ -20,3 +20,12 @@ errorLogin-email                                : Zadajte prosím váš email.
 errorLogin-password                             : Zadajte prosím vaše heslo.
 errorLogin-notFound                             : Administrátor so zadanou emailovou adresou nebol nájdený.
 errorLogin-notVerified                          : Nepodarilo sa overiť vaše heslo.
+
+// Arealy
+
+errorAreal-unableToGet                          : Nepodarilo sa získať budovu.
+errorAreal-unableToQuery                        : Nepodarilo sa načítať zoznam arealov.
+
+//Mapy
+
+errorAreal-unableToQuery                        : Nepodarilo sa načítať zoznam máp.

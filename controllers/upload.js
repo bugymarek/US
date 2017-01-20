@@ -4,7 +4,7 @@ var fs = require('fs');
 
 
 exports.install = function () {
-    F.route('/', viewUpload, ['get']);
+   // F.route('/', viewUpload, ['get']);
     F.route('/upload', uploadImage, ['post']);
 };
 

@@ -84,6 +84,27 @@ Areal.setQuery(function (error, options, callback) {
     });
 });
 
+/**
+ * Nacitanie arealu podla filtra.
+ * 
+ * @param {Object} error Chyba.
+ * @param {Object} model Aktualny objekt arealu.
+ * @param {Object} options Parametre vyhladavania.
+ * @return {*} Areal.
+ */
+Areal.setGet(function (error, model, options, callback) {
+    DATABASE('areals').findOne(options, function (err, areal) {
+        if (err) {
+            error.push('unableToGet');
+            return callback();
+        }
+        if (areal) {
+            U.copy(areal, model);
+        }
+        return callback();
+    });
+});
+
 exports.Areal = Areal;
 exports.Vrchol = Vrchol;
 exports.Hrana = Hrana;
