@@ -1,6 +1,7 @@
  @{meta('Domov | ' + config.name)} @{repository.active = 'home'} @{head('home.js')}
 <div id="content-wrapper">
     <!--Oblast mapy-->
+    <div class="text-left col-md-12">
     @{if model && Array.isArray(model.maps) && model.maps.length > 0}
     <div class="col-md-3">
         <div class="dropdown ">
@@ -30,6 +31,16 @@
         <h1 class="collapse-title">V administrácii pridajte mapu</h1>
     </div>
     @{fi}
+    </div>
+    
+    <!--tabulka pre najkratsiu cestu-->
+    <div class="text-center col-md-12">
+        <h1 id="shortestPath-name" class="collapse-title"></h1>
+    <div class="col-md-12">
+            <table id="table-pathSearcher" class="scrollbar table-hover  table-striped results">    
+            </table>
+        </div>       
+        </div>
     
     <!--Oblast vyber budovy z-->
     <div class="text-center col-md-6">
@@ -49,7 +60,6 @@
         <div class="col-xs-5 form-group">
             <input id="roomFrom-search-name" type="text" class=" search form-control" placeholder="Názov miestnosti">
         </div>
-
         <div class="text-left col-md-12">
             <table id="table-roomFrom" class="scrollbar alone table-hover with-margin table-striped results">
                 <thead>
@@ -119,8 +129,6 @@
                     <tr>
                         <td class="text-center col-sm-10 col-xs-10"></td>
                     </tr>
-
-
                 </tbody>
             </table>
         </div>
@@ -128,7 +136,7 @@
 
     <!--Oblast hladania najkratsiej cesty -->
     <div class="text-center col-md-12">
-        <a class="btn btn-normal" href="/festival">
+        <a id="submitPathSearch" class="btn btn-normal">
             <span class="fa fa-plus" aria-hidden="true"></span>
             <span >&nbsp;Vyhľadaj&nbsp;cestu</span>
         </a>

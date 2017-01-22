@@ -39,7 +39,7 @@ function loadMaps(next) {
     var self = this;
     Map.query({
         sort: {
-            name: 1
+            nazov: 1
         }
     }, function (err, maps) {
         if (err) {
@@ -57,7 +57,7 @@ function loadBuildings(next) {
     var self = this;
     Areal.query({
         sort: {
-            name: 1
+            nazov: 1
         },
         filter: {
             budova: true
@@ -85,8 +85,7 @@ function getRoomsOfBuilding(id) {
     }, function (err, model) {
         if (err) {
             return self.throw500(err);
-        }
-        console.log(model);
+        }      
         if (!model || !model._id) {
             return self.throw404(new ErrorBuilder().push('errorAreal-unableToGet'));
         }
@@ -95,6 +94,10 @@ function getRoomsOfBuilding(id) {
             for (var i = model.vrcholy.length - 1; i >= 0; i--) {
                 if (model.vrcholy[i].typ !== "miestnost") model.vrcholy.splice(i, 1);
             }
+            model.vrcholy.forEach(function (vrchol) {
+                delete vrchol.typ;
+            });
+            //console.log(model);
         return self.json(model);
     });
 }

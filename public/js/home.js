@@ -10,11 +10,17 @@ $(document).ready(function () {
     // nacitanie tabulky miestnosti pre budovu do
     $('.roomTo').on('click', onDropdownBuildingItemClick('#nameOfBuildingTo', 'roomTo'));
     // vyhladavanie v tabulkach
-    $("#roomFrom-search-name").keyup(search('#roomFrom-search-name', '#table-roomFrom'));
-    $("#roomTo-search-name").keyup(search('#roomTo-search-name', '#table-roomTo'));   
+    $('#roomFrom-search-name').keyup(search('#roomFrom-search-name', '#table-roomFrom'));
+    $('#roomTo-search-name').keyup(search('#roomTo-search-name', '#table-roomTo'));   
     // nastavenie nazvu miestnoti po kliknuti
     $('#table-roomFrom').on('click', 'tbody tr', onRoomItemOfTable('#roomFrom')); 
     $('#table-roomTo').on('click', 'tbody tr', onRoomItemOfTable('#roomTo'));   
+    
+    //spustenie akcie pre hladanie najkratsiej cesty
+    $('#submitPathSearch').on('click', pathSearch);
+    
+    // akcia po kliknuti na vrchol v tabulke najkratsej cety
+    $('#table-pathSearcher').on('click', 'tbody tr td', onNodeItemOfTable);  
 });
 
 /**
@@ -108,7 +114,6 @@ function onDropdownBuildingItemClick(idNameOfBuilding, idTableOfRooms) {
 			if (res.responseJSON.errors.length > 0) {
 				res.responseJSON.errors.forEach(function (e) {
 					message += e.error + '<br/>';
-					onAttributeError(e);
 				});
 			}
 		}
@@ -155,21 +160,26 @@ function onRoomItemOfTable(searchInput) {
 }
 
 /**
- * Vytvorenie noveho pouzivatela alebo aktualizacia existujuceho.
+ * Najdenie najkratsej cesty
  */
-function onSubmitItemClick(id) {
-    console.log(id);
-    var url = '/building/' + id;
-        console.log(url);
+function pathSearch() {
+    //kontrola vstupov
+    if(!checkInputPathSearcher()){
+        return;
+    }
+    var data ={
+        from: $('#roomFrom-search-name').val(),
+        to: $('#roomTo-search-name').val()
+    };
+    var url = '/graf';
 	$.ajax({
-		method: 'get',
+		method: 'post',
 		url: url,
-		data: JSON.stringify(id),
+		data: JSON.stringify(data),
 		contentType: 'application/json',
 		dataType: 'json'
-	}).done(function (res) {
-        
-		console.log(res);
+	}).done(function (res) {       
+       createTableOfShortestPath(res); 	
 	}).fail(function (res) {
 		var message = '';
 		if (res && res.responseJSON && Array.isArray(res.responseJSON.errors)) {
@@ -180,8 +190,78 @@ function onSubmitItemClick(id) {
 				});
 			}
 		}
-        //showErrorMessage(message || 'Nepodarilo sa uložiť uživateľa');
-	}).always(function () {
-
+        showErrorMessage('Nepodarilo sa najsť cestu');
 	});
+}
+
+/**
+ * Kontrola vstupov
+ */
+function checkInputPathSearcher(){
+    $('#roomFrom-search-name').closest('.form-group').removeClass('has-error');
+    $('#roomTo-search-name').closest('.form-group').removeClass('has-error');
+    
+    var check = true;
+    var from = $('#roomFrom-search-name').val();
+    var to = $('#roomTo-search-name').val();
+    var roomsFrom = $('#table-roomFrom tbody tr').map(function () {
+        return $(this).data().item;
+    }).get();
+    var roomsTo = $('#table-roomTo tbody tr').map(function () {
+        return $(this).data().item;
+    }).get();
+    
+    if(!from){
+        showErrorMessage('Vyberte miestnosť z');
+        $('#roomFrom-search-name').closest('.form-group').addClass('has-error');
+        return check = false;
+    }
+    if(roomsFrom.indexOf(from) < 0){
+        showErrorMessage('Vybrana miestnosť "z" neexistuje!');
+        $('#roomFrom-search-name').closest('.form-group').addClass('has-error');
+        return check = false;;
+    }
+    if(!to){
+        showErrorMessage('Vyberte miestnosť do');
+        $('#roomTo-search-name').closest('.form-group').addClass('has-error');
+        return check = false;;
+    }
+    if(roomsTo.indexOf(to) < 0){
+        $('#roomTo-search-name').closest('.form-group').addClass('has-error');
+        return check = false;
+    }   
+    return check;
+}
+
+function createTableOfShortestPath(path) {
+    if(path && Array.isArray(path) && path.length > 0){           
+            //vymazane tabulky a popisu
+            $('#table-pathSearcher').empty();
+            $('#shortestPath-name').empty();   
+            //popis najrkatsiej cesty + generovanie hlavicky a tela tabulky
+            $('#shortestPath-name').append("Najkratšia cesta z " + path[0].vrchol + " do " + path[path.length-1].vrchol);
+            var html = '<thead></thead><tbody class="scrollbarStyle table-bordered"></tbody>';
+            var row = $(html);  
+            $('#table-pathSearcher').append(row);
+            html = '<tr><th class="text-center col-sm-6 col-xs-6">Vrchol z</th><th class="text-center col-sm-6 col-xs-6">Vrchol do</th></tr>';                     
+            row = $(html);
+            //row.data('item', element.nazov);
+            $('#table-pathSearcher thead').append(row); 
+            for(var i = 1; i < path.length; i++){
+               html = '<tr><td class="text-center 6 col-xs-6" data-item="' + JSON.stringify(path[i-1]) + '">' + path[i-1].vrchol + '</td><td class="text-center 6 col-xs-6" data-item="' + JSON.stringify(path[i]) + '">' + path[i].vrchol + '</td></tr>';
+               row = $(html); 
+               $('#table-pathSearcher tbody').append(row);
+            };
+        }else {
+            showErrorMessage('Cesta nexistuje! Skontrolujte prosím vtupy.');
+            $('#roomFrom-search-name').closest('.form-group').addClass('has-error');
+            $('#roomTo-search-name').closest('.form-group').addClass('has-error');
+        }
+}
+
+function onNodeItemOfTable() {
+    //toDo: neche mi ulozit objekt do html tagu td ...konkretne data-item
+    var node = $(this).data().item;  
+    console.log(node);
+    alert(node);
 }

@@ -1,7 +1,7 @@
 /css/bootstrap.min.css			: /css/bootstrap.min.css?v=1
 /css/font-awesome.min.css	    : /css/font-awesome.min.css?v=1
 /css/sweetalert2.min.css        : /css/sweetalert2.min.css?v=1
-/css/styles.css					: /css/styles.css?v=7
+/css/styles.css					: /css/styles.css?v=8
 /css/jquery-ui.min.css		    : /css/jquery-ui.min.css?v=1
 /css/select2.min.css		    : /css/select2.min.css?v=1
 /css/timepicker.css             : /css/timepicker.css?v=1
@@ -19,4 +19,4 @@
 /js/administrators.js           : /js/administrators.js?v=4
 /js/scripts.js					: /js/scripts.js?v=1
 /js/login.js					: /js/login.js?v=1
-/js/home.js					    : /js/home.js?v=1
+/js/home.js					    : /js/home.js?v=2

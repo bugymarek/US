@@ -597,7 +597,7 @@ table.scrollbar {
   width: 100%;
   text-align: center;
   min-width: 200px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
   
 }
 
@@ -802,7 +802,6 @@ table.scrollbar thead {
     overflow: auto;
     border: 1px solid $lightBorderColor;
     border-radius: 4px;
-    margin-bottom: 50px;
 }
 
 /*
