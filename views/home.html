@@ -1,5 +1,6 @@
- @{meta('Domov | ' + config.name)} @{repository.active = 'home'} @{head('home.js')}
+ @{meta('Domov | ' + config.name)} @{repository.active = 'home'} @{head('home.js')} @{head('dragscroll/dragscroll.js')}
 <div id="content-wrapper">
+
     <!--Oblast mapy-->
     <div class="text-left col-md-12">
     @{if model && Array.isArray(model.maps) && model.maps.length > 0}
@@ -18,7 +19,7 @@
     </div>
     <div id="buttons" class="col-md-1 text-right"></div>
     <div class="col-md-11">
-        <div class="imgScroll scrollbarStyle">
+        <div class="imgScroll scrollbarStyle dragscroll">
             <img class="mySlides" src="@{model.maps[model.maps.map(function(e) { return e.nazov; }).indexOf('Univerzita')].url}">
         </div>
     </div>

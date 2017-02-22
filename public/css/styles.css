@@ -800,8 +800,9 @@ table.scrollbar thead {
     height: 500px;
     width: 100%;
     overflow: auto;
-    border: 1px solid $lightBorderColor;
     border-radius: 4px;
+    cursor: move;
+    border: 1px solid $lightBorderColor;  
 }
 
 /*

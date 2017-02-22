@@ -5,9 +5,6 @@ $(document).ready(function () {
 	
 	// vyhladavanie v tabulkach
 	searcher();
-	
-    // schovam sekciu festivaly pri nacitani view 
-    $("#section-administrator-festivals").hide();
     
     $('#submit-item').bind('click', onSubmitItemClick);
 
@@ -50,13 +47,7 @@ $(document).ready(function () {
 
 function onTableItemClick() {
     var user = $(this).data().item;
-    
-    // zobrazim sekciu festivaly
-    $("#section-administrator-festivals").show();
-    
-	// zazem zoznam festivalov  
-    $("#table-administrator-festivals tbody tr").remove();
-	       
+        
 	// Zakladne
 	$('#item-id').val(user.administrator._id || '');
 	$('#delete-item').show();
@@ -76,28 +67,10 @@ function onTableItemClick() {
     // Aktivaci radio button podla permissons
     $('#ADMIN').prop('checked', user.administrator.permissions === 'ADMIN');
     $('#SUPERADMIN').prop('checked', user.administrator.permissions === 'SUPERADMIN');
-
-	loadFestivals(user);
 	
 	// obnovim vyhladavanie kapiel
     initializeSearch();
 }
-
-//nacitanie festivalov pre adenoho administratora
-function loadFestivals(administrator) {
-    administrator.festivals.forEach(function (item) {
-        var html = '<tr>' +
-			'<td class="text-center">' + item.name + '</td>' +
-			'<td class="text-center"> <input type="checkbox" value="' + item.id + '"  name="administrator-festivals"' +
-			((Array.isArray(administrator.administrator.festivals) && administrator.administrator.festivals.length > 0 && administrator.administrator.festivals.indexOf(item.id) >= 0) ? 'checked' : '') + ' > </td>' +
-			'</tr>';
-		var row = $(html);
-		row.data('item', item);
-		$('#table-administrator-festivals').append(row);
-    });
-}
-
-
 
 /**
  * Skrytie modalneho okna - restart hodnot. 
@@ -110,7 +83,6 @@ function loadFestivals(administrator) {
 
 	// Zakladne
 	$('#item-id').val('');
-	$('#festival-search-name').val('');
 	$('#confirm-delete-item').hide();
 	$('#delete-item').hide();
 	$('#submit-item').prop('disabled', false);
@@ -127,12 +99,6 @@ function loadFestivals(administrator) {
 
 	// Aktivacia
 	$('#user-activated').prop('checked', true);
-
-	//zazem zoznam festivalov  
-    $("#table-administrator-festivals tbody tr").remove();
-    
-    // schovam  sekciu festivaly
-    $("#section-administrator-festivals").hide();
     
     // nastavenia radion button pre admina
     $('#ADMIN').prop('checked', true);
@@ -259,10 +225,7 @@ function composeRequestData(id) {
 	var data = {
 		name: $('#user-name').val(),
 		isActive: $('#user-activated').prop('checked'),
-        permissions: $("input:radio[name=permissions]:checked").val(),
-        festivals: $('input:checkbox[name=administrator-festivals]:checked').map(function () {
-			return $(this).val();
-		}).get()
+        permissions: $("input:radio[name=permissions]:checked").val()
 	};
 	if (!id) {
 		data.email = $('#user-email').val();

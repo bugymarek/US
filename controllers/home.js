@@ -34,7 +34,7 @@ function viewDomov() {
     });
 }
 
-// nacitanie festivalov
+// nacitanie map
 function loadMaps(next) {
     var self = this;
     Map.query({

@@ -1,7 +1,6 @@
 var mail = require('total.js/mail');
 var moment = require("moment-timezone");
 var Administrator = GETSCHEMA('Administrator');
-var Festival = GETSCHEMA('Festival');
 
 
 exports.install = function () {

@@ -30,7 +30,7 @@
     </thead>
     <tbody>
         @{foreach administrator in model.administrators}
-        <tr class="item-detail" data-toggle="modal" data-target="#item-modal" data-item="@{JSON.stringify({festivals: model.festivals, administrator: administrator})}">
+        <tr class="item-detail" data-toggle="modal" data-target="#item-modal" data-item="@{JSON.stringify({administrator: administrator})}">
             <td class="text-left">@{administrator.name || '-'}</td>
             <td class="text-left hide-on-mobile">@{administrator.email || '-'}</td>
             <td class="text-left hide-on-mobile">@{administrator.permissions}</td>
@@ -67,32 +67,6 @@
                 <div class="form-group">
                     <label for="user-name">Meno&nbsp;*</label>
                     <input id="user-name" class="form-control" type="text">
-                </div>
-                <!--zoznam festivalov-->
-                <div id="section-administrator-festivals">
-                    <div clas="row form-group">
-                        <div class="col-xs-6">
-                            <h1>Spravované festivaly</h1>
-                        </div>
-                        <i class="col-xs-1 fa fa-search fa-2x" aria-hidden="true"></i>     
-                    <div class="col-xs-5 form-group">
-                        <input  id="festival-search-name" type="text" class=" search form-control" placeholder="Názov festivalu">
-                    </div>
-                    </div>
-                    
-                    @{if model && Array.isArray(model.festivals) && model.festivals.length > 0}
-                    <table id="table-administrator-festivals" class="scrollbar with-margin table-striped results">
-                        <thead>
-                            <tr>
-                                <th class="text-center col-sm-10 col-xs-10">Názov</th>
-                                <th class="text-center col-sm-1 col-xs-2">Vyber</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    @{else}
-                    <div id="festivals-empty">Aktuálne neevidujeme žiadné festivaly. Vytvorte festival v sekcii festivaly</div>
-                    @{fi}
                 </div>
                 
                 <div class="row">

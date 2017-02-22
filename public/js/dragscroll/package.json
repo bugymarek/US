@@ -1,0 +1,68 @@
+{
+  "author": {
+    "name": "Dmitry Prokashev",
+    "email": "heliosframework@gmail.com"
+  },
+  "name": "dragscroll",
+  "description": "Tiny library for drag-n-drop scrolling style",
+  "version": "0.0.8",
+  "keywords": [
+    "dragscroll",
+    "scroll",
+    "scrolling",
+    "mouse",
+    "hold",
+    "drag-n-drop",
+    "drag-and-drop",
+    "click-n-hold",
+    "click-and-hold",
+    "drag",
+    "viewport"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/asvd/dragscroll.git"
+  },
+  "browser": {
+    "fs": false,
+    "child_process": false
+  },
+  "main": "dragscroll.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/asvd/dragscroll/issues"
+  },
+  "homepage": "https://github.com/asvd/dragscroll#readme",
+  "_id": "dragscroll@0.0.8",
+  "scripts": {},
+  "_shasum": "de4771e5f3a14d77b583ecef5d38bd9618f27563",
+  "_from": "dragscroll@latest",
+  "_npmVersion": "3.3.3",
+  "_nodeVersion": "4.2.6",
+  "_npmUser": {
+    "name": "asvd",
+    "email": "heliosframework@gmail.com"
+  },
+  "dist": {
+    "shasum": "de4771e5f3a14d77b583ecef5d38bd9618f27563",
+    "tarball": "https://registry.npmjs.org/dragscroll/-/dragscroll-0.0.8.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "asvd",
+      "email": "heliosframework@gmail.com"
+    }
+  ],
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/dragscroll-0.0.8.tgz_1479680388897_0.9048625403083861"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/dragscroll/-/dragscroll-0.0.8.tgz",
+  "readme": "ERROR: No README data found!"
+}

@@ -3,7 +3,7 @@
   "description": "Administration interface and client for finding shortest path ",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/bugymarek/Bakalarka"
   },
   "license": "UNLICENSED",
   "version": "1.0.0",

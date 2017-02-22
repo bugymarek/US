@@ -65,9 +65,8 @@ Administrator.define('permissions', String, true);
 Administrator.define('created', Date);
 Administrator.define('updated', Date);
 Administrator.define('isActive', Boolean);
-Administrator.define('festivals', Array);
 
-Administrator.constant('allowed', ['name', 'permissions', 'updated', 'isActive', 'festivals']);
+Administrator.constant('allowed', ['name', 'permissions', 'updated', 'isActive']);
 Administrator.setPrefix('errorAdministrator-');
 Administrator.setDefault(function (name) {
     switch (name) {
@@ -85,8 +84,6 @@ Administrator.setPrepare(function (name, value) {
             return value.toLowerCase() || null;
         case 'permissions':
             return value ? value.toUpperCase() : 'ADMIN';
-        case 'festivals':
-            return U.isIDPrepare(value);
     }
 });
 
@@ -100,8 +97,6 @@ Administrator.setValidate(function (name, value) {
             return U.isEmail(value) && value.length >= 6 && value.length <= 200;
         case 'permissions':
             return U.isAdministratorPermissions(value);
-        case 'festivals':
-            return U.isIDValid(value);
         default:
             return false;
     }
