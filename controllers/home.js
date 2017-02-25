@@ -3,6 +3,7 @@ var Areal = GETSCHEMA('Areal');
 
 exports.install = function () {
     F.route('/', viewDomov, ['get']);
+    F.route('/map/{name}', getMap, ['get']);
     F.route('/building/{id}', getRoomsOfBuilding, ['get']);
 };    
 
@@ -97,7 +98,22 @@ function getRoomsOfBuilding(id) {
             model.vrcholy.forEach(function (vrchol) {
                 delete vrchol.typ;
             });
-            //console.log(model);
+        return self.json(model);
+    });
+}
+
+// vrati mapu podla nazvu.
+function getMap(name) {
+    var self = this;
+    Map.get({
+        nazov: name
+    }, function (err, model) {
+        if (err) {
+            return self.throw500(err);
+        }      
+        if (!model || !model.nazov) {
+            return self.throw404(new ErrorBuilder().push('errorMap-unableToGet'));
+        }
         return self.json(model);
     });
 }

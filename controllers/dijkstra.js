@@ -17,13 +17,17 @@ function returnPath(graf, from, to) {
     var createdGraf = new Graph(objGraf);
     var path = createdGraf.shortestPath(from, to);
     if(path == null) return null;
-    console.log(path);
+
+    // vytvorenie pola typu objek pre jednotlive vrcholy.   
     var expandPath = [];
     path.forEach(function (element) {
         var vrchol = {
             vrchol: element,
             areal: graf.find(x => x.vrchol === element).areal,
-            typ: graf.find(x => x.vrchol === element).typ
+            poschodie: graf.find(x => x.vrchol === element).poschodie,
+            suradnicaX: graf.find(x => x.vrchol === element).suradnicaX,
+            suradnicaY: graf.find(x => x.vrchol === element).suradnicaY,
+            typ: graf.find(x => x.vrchol === element).typ,
         };
         expandPath.push(vrchol);
     });
@@ -47,7 +51,6 @@ function returnGraf() {
         if (context.error.hasError()) {
             return self.throw500(context.error);
         }
-        //context.async.await(returnPath(context.results.graf, from, to));
         var path = returnPath(context.results.graf, from, to);
         return self.json(path);
     });

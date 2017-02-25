@@ -28,4 +28,4 @@ errorAreal-unableToQuery                        : Nepodarilo sa načítať zozna
 
 //Mapy
 
-errorAreal-unableToQuery                        : Nepodarilo sa načítať zoznam máp.
+errorMap-unableToQuery                          : Nepodarilo sa načítať zoznam máp.

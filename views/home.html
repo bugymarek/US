@@ -20,7 +20,8 @@
     <div id="buttons" class="col-md-1 text-right"></div>
     <div class="col-md-11">
         <div class="imgScroll scrollbarStyle dragscroll">
-            <img class="mySlides" src="@{model.maps[model.maps.map(function(e) { return e.nazov; }).indexOf('Univerzita')].url}">
+            <i id="mapPoint" class="fa fa-dot-circle-o faa-pulse animated fa-2x "></i>            
+            <img class="mySlides" src="@{model.maps[model.maps.map(function(e) { return e.nazov; }).indexOf('Univerzita')].url}">                   
         </div>
     </div>
     @{else}
@@ -40,7 +41,7 @@
     <div class="col-md-12">
             <table id="table-pathSearcher" class="scrollbar table-hover  table-striped results">    
             </table>
-        </div>       
+        </div><button onClick="scrollToPosition('.imgScroll')">Scroll Div to Bottom</button>  <span class='display'>Positioddn : </span>       
         </div>
     
     <!--Oblast vyber budovy z-->

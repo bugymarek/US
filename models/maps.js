@@ -70,5 +70,26 @@ Map.setQuery(function (error, options, callback) {
     });
 });
 
+/**
+ * Nacitanie mapy podla filtra.
+ * 
+ * @param {Object} error Chyba.
+ * @param {Object} model Aktualny objekt mapy.
+ * @param {Object} options Parametre vyhladavania.
+ * @return {*} map.
+ */
+Map.setGet(function (error, model, options, callback) {
+    DATABASE('maps').findOne(options, function (err, areal) {
+        if (err) {
+            error.push('unableToGet');
+            return callback();
+        }
+        if (areal) {
+            U.copy(areal, model);
+        }
+        return callback();
+    });
+});
+
 exports.Map = Map;
 exports.Poschodie = Poschodie;
