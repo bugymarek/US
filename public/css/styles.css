@@ -297,7 +297,7 @@ body {
 }
 
 .table-bordered {
-    border-color: $lightBlueColor;
+    border-color: $lightBorderColor;
 }
 
 .table-bordered > thead > tr > th,

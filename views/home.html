@@ -1,48 +1,38 @@
  @{meta('Domov | ' + config.name)} @{repository.active = 'home'} @{head('home.js')} @{head('dragscroll/dragscroll.js')}
 <div id="content-wrapper">
-
-    <!--Oblast mapy-->
-    <div class="text-left col-md-12">
-    @{if model && Array.isArray(model.maps) && model.maps.length > 0}
+    @{if model && Array.isArray(model.areals) && model.areals.length > 0}   
+    @{if model.areals.map(function(e) { return e.nazov; }).indexOf('Univerzita')>=0}
+    <!--Vyber mapy-->
     <div class="col-md-3">
         <div class="dropdown ">
             <button class=" dropbtn">Vyber mapu</button>
             <div class="dropdown-content">
-                @{foreach map in model.maps}
-                <a class="map" data-item="@{JSON.stringify(map)}">@{map.nazov}</a> @{end}
+                @{foreach map in model.areals}
+                <a class="map" data-item="@{JSON.stringify({nazov: map.nazov, url: map.url, poschodia: map.poschodia})}">@{map.nazov}</a> @{end}
             </div>
         </div>
     </div>
-    @{if model.maps.map(function(e) { return e.nazov; }).indexOf('Univerzita')>=0}
+
+    <!--Oblast mapy-->
     <div class="text-center col-md-12">
-        <h1 id="map-name" class="collapse-title">@{model.maps[model.maps.map(function(e) { return e.nazov; }).indexOf('Univerzita')].nazov}</h1>
+        <h1 id="map-name" class="collapse-title">@{model.areals[model.areals.map(function(e) { return e.nazov; }).indexOf('Univerzita')].nazov}</h1>
     </div>
     <div id="buttons" class="col-md-1 text-right"></div>
     <div class="col-md-11">
         <div class="imgScroll scrollbarStyle dragscroll">
             <i id="mapPoint" class="fa fa-dot-circle-o faa-pulse animated fa-2x "></i>            
-            <img class="mySlides" src="@{model.maps[model.maps.map(function(e) { return e.nazov; }).indexOf('Univerzita')].url}">                   
+            <img class="mySlides" src="@{model.areals[model.areals.map(function(e) { return e.nazov; }).indexOf('Univerzita')].url}">                   
         </div>
     </div>
-    @{else}
-    <div class="text-center col-md-12">
-        <h1 class="collapse-title">Vytvorte mapu s názvom Univerzita</h1>
-    </div>
-    @{fi} @{else}
-    <div class="text-center col-md-12">
-        <h1 class="collapse-title">V administrácii pridajte mapu</h1>
-    </div>
-    @{fi}
-    </div>
-    
+
     <!--tabulka pre najkratsiu cestu-->
     <div class="text-center col-md-12">
         <h1 id="shortestPath-name" class="collapse-title"></h1>
-    <div class="col-md-12">
+        <div class="col-md-12">
             <table id="table-pathSearcher" class="scrollbar table-hover  table-striped results">    
             </table>
-        </div><button onClick="scrollToPosition('.imgScroll')">Scroll Div to Bottom</button>  <span class='display'>Positioddn : </span>       
-        </div>
+        </div>       
+    </div>
     
     <!--Oblast vyber budovy z-->
     <div class="text-center col-md-6">
@@ -51,9 +41,12 @@
             <div class="dropdown ">
                 <button class=" dropbtn">Vyber budovu z</button>
                 <div class="dropdown-content">
-                 @{if model && Array.isArray(model.buildings) && model.buildings.length > 0}   
-                    @{foreach building in model.buildings}
-                    <a class="roomFrom" data-item="@{JSON.stringify(building)}">@{building.nazov}</a> @{end}
+                 @{if model && Array.isArray(model.areals) && model.areals.length > 0}   
+                    @{foreach areal in model.areals}
+                     @{if areal.budova}    
+                    <a class="roomFrom" data-item="@{areal._id}">@{areal.nazov}</a> 
+                    @{fi}
+                    @{end}
                  @{fi}
                 </div>
             </div>
@@ -96,9 +89,12 @@
             <div class="dropdown ">
                 <button class=" dropbtn">Vyber budovu do</button>
                 <div class="dropdown-content">
-                 @{if model && Array.isArray(model.buildings) && model.buildings.length > 0}   
-                    @{foreach building in model.buildings}
-                    <a class="roomTo" data-item="@{JSON.stringify(building)}">@{building.nazov}</a> @{end}
+                 @{if model && Array.isArray(model.areals) && model.areals.length > 0}   
+                    @{foreach areal in model.areals}
+                    @{if areal.budova}
+                    <a class="roomTo" data-item="@{areal._id}">@{areal.nazov}</a>
+                    @{fi} 
+                    @{end}
                  @{fi}
                 </div>
             </div>
@@ -143,4 +139,13 @@
             <span >&nbsp;Vyhľadaj&nbsp;cestu</span>
         </a>
     </div>
+    @{else}
+    <div class="text-center col-md-12">
+        <h1 class="collapse-title">Vytvorte areál s názvom Univerzita</h1>
+    </div>
+    @{fi} @{else}
+    <div class="text-center col-md-12">
+        <h1 class="collapse-title">V administrácii pridajte areal</h1>
+    </div>
+    @{fi}
 </div>

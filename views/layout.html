@@ -54,7 +54,14 @@
                                             <i class="fa fa-cogs" aria-hidden="true"></i> Administrácia
                                         </a>
                                     </li>
-                                    @{fi}                                
+                                    @{fi} 
+                                    @{if user}
+                                    <li>
+                                        <a class="menu-item @{if repository.active == 'areals'} active@{fi}" href="/areals">
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Areály
+                                        </a>
+                                    </li>
+                                    @{fi} 
                                     @{if user && user.permissions === 'SUPERADMIN'}
                                     <li>
                                         <a class="menu-item @{if repository.active == 'administrators'} active@{fi}" href="/administrators">

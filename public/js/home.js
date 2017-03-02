@@ -55,7 +55,7 @@ function onNodeItemOfTable() {
     // posunutie a zobrazenie bodu na spravnom mieste
     $("#mapPoint").css({ left: (x - 12) + "px", top: (y - 14) + "px" });
     $("#mapPoint").css('z-index', 3000);
-    },40);
+    },50);
 
     
 }
@@ -91,8 +91,8 @@ function showDivs(n) {
 */
 // nacitanie tabulky miestnosti pre budovu Z
 function onDropdownBuildingItemClick(idNameOfBuilding, idTableOfRooms) {
-    return function () {
-        var buildingID = $(this).data().item._id;
+    return function () {      
+        var buildingID = $(this).data().item;
         var url = '/building/' + buildingID;
         $.ajax({
             method: 'get',
@@ -278,8 +278,9 @@ function createTableOfShortestPath(path) {
  * @param {object} object objekt mapy obsahujuci data
  */ 
 function setMap(object, floor) {  
-        // zmen nazov mapy
         var map = object;
+
+        // zmen nazov mapy
         $('#map-name').text(map.nazov);
 
         // pridanie tlacidiel pre poschodia

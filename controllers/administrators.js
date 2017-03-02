@@ -57,9 +57,9 @@ function sendEmailNotification(email, password) {
  */
 function updateAdmnistrator(id) {
 	var self = this;
-	//if (self.user.permissions !== 'SUPERADMIN') {
-		//return self.throw403(new ErrorBuilder().push('errorAdministrator-permissions'));
-	//}
+	if (self.user.permissions !== 'SUPERADMIN') {
+		return self.throw403(new ErrorBuilder().push('errorAdministrator-permissions'));
+	}
 	id = U.parseObjectID(id);
 	if (!id) {
 		return self.throw400(new ErrorBuilder().push('errorAdministrator-unableToUpdate'));
@@ -123,9 +123,9 @@ function deleteAdministrator(id) {
 function viewAdministrators() {
 	var self = this;
 	id = U.parseObjectID(self.user._id);
-	//if (self.user.permissions !== 'SUPERADMIN' || !id) {
-		//return self.redirect('/');
-	//}	
+	if (self.user.permissions !== 'SUPERADMIN' || !id) {
+		return self.redirect('/');
+	}	
 	var limit = 10;
 	var page = U.parseInt(self.query.p, 1);
 	if (page <= 0 || (self.query.p && self.query.p != page.toString())) {

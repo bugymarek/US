@@ -1,0 +1,93 @@
+@{meta('Areály | ' + config.name)} 
+@{repository.active = 'areals'}
+
+<div id="content-wrapper">
+<div clas="row">
+    <div class="col-xs-12">
+        <h1>Areály</h1>
+        <button class="btn btn-submit btn-content-action" data-toggle="modal" data-target="#item-modal">
+            <span class="fa fa-user-plus" aria-hidden="true"></span>
+            <span class="hide-on-mobile">&nbsp;Pridať &nbsp;areál</span>
+        </button>
+    </div>
+</div>
+
+
+@{if model && Array.isArray(model.areals) && model.areals.length > 0}
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th class="text-left col-sm-6 col-xs-6">Názov</th>
+            <th class="text-left col-sm-6 col-xs-6">Typ</th>
+            <tr>
+    </thead>
+    <tbody>
+        @{foreach areal in model.areals}
+        <tr class="item-detail" data-toggle="modal" data-target="#item-modal" data-item="@{JSON.stringify({areal: areal})}">
+            <td class="text-left">@{areal.nazov || '-'}</td>
+            <td class="text-left">@{areal.budova ? 'Budova' : 'Areal' || '-'}</td>
+        </tr>
+        @{end}
+    </tbody>
+</table>
+
+@{view('~/partials/pagination', model)} @{else}
+<div>Aktuálne neevidujeme žiadne areály.</div>
+@{fi}
+
+<div id="item-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Nový&nbsp;používateľ</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Email pouzivatela -->
+                <div class="form-group">
+                    <label for="user-email">Email&nbsp;*</label>
+                    <input id="user-email" class="form-control" type="text">
+                </div>
+                <!-- Meno pouzivatela -->
+                <div class="form-group">
+                    <label for="user-name">Meno&nbsp;*</label>
+                    <input id="user-name" class="form-control" type="text">
+                </div>
+                
+                <div class="row">
+                    <!--checkbox uzivatelskej aktivity-->
+                    <div class="col-sm-6 checkbox">
+                        <label>
+                            <input id="user-activated" type="checkbox" checked>Aktívny
+                        </label>
+                    </div>
+                    <!--radio buttons group uzivatelove opravenie-->
+                    <div class="col-sm-6 text-right ">
+                        <div class="radio-btns">
+                            <input type="radio" name="permissions" value="ADMIN" id="ADMIN" checked >
+                            <span class="radio-text">ADMIN</span>
+
+                            <input type="radio" name="permissions" value="SUPERADMIN" id="SUPERADMIN" >
+                            <span class="radio-text">SUPERADMIN</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <input id="item-id" type="hidden">
+                <div id="error"></div>
+                <div class="additional-infos">* povinný parameter</div>
+                <div class="well without-bottom-margin">
+                    <p>Po úspešnom vytvorení používateľa bude na zadanú emailovú adresu odoslané prístupové heslo.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div hidden id="confirm-delete-item" class="confirm-delete-item">Naozaj chcete odstrániť používateľa?</br>
+                </div>
+                <button id="delete-item" type="button" class="btn btn-delete">Odstrániť</button>
+                <button id="submit-item" type="button" class="btn btn-submit">Uložiť</button>
+                <button type="button" class="btn btn-normal" data-dismiss="modal">Zrušiť</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
