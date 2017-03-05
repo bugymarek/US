@@ -38,8 +38,8 @@
     <div class="text-center col-md-6">
 
         <div class="text-left col-md-6">
-            <div class="dropdown ">
-                <button class=" dropbtn">Vyber budovu z</button>
+            <div class="dropdown with-margin-bottom">
+                <button class="dropbtn">Vyber budovu z</button>
                 <div class="dropdown-content">
                  @{if model && Array.isArray(model.areals) && model.areals.length > 0}   
                     @{foreach areal in model.areals}
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <i class="col-xs-1 fa fa-search fa-2x" aria-hidden="true"></i>
+        <i class="col-xs-1 with-margin-bottom fa fa-search fa-2x" aria-hidden="true"></i>
         <div class="col-xs-5 form-group">
             <input id="roomFrom-search-name" type="text" class=" search form-control" placeholder="Názov miestnosti">
         </div>
@@ -86,7 +86,7 @@
     <!--Oblast vyber budovy do-->
     <div class="text-center col-md-6">
         <div class="text-left col-md-6">
-            <div class="dropdown ">
+            <div class="dropdown with-margin-bottom">
                 <button class=" dropbtn">Vyber budovu do</button>
                 <div class="dropdown-content">
                  @{if model && Array.isArray(model.areals) && model.areals.length > 0}   
@@ -99,7 +99,7 @@
                 </div>
             </div>
         </div>
-        <i class="col-xs-1 fa fa-search fa-2x" aria-hidden="true"></i>
+        <i class="col-xs-1 with-margin-bottom fa fa-search fa-2x" aria-hidden="true"></i>
         <div class="col-xs-5 form-group">
             <input id="roomTo-search-name" type="text" class=" search form-control" placeholder="Názov miestnosti">
         </div>

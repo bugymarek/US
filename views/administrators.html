@@ -14,7 +14,6 @@
     </div>
 </div>
 
-
 @{if model && Array.isArray(model.administrators) && model.administrators.length > 0}
 <table class="table table-bordered table-striped table-hover">
     <thead>
@@ -91,7 +90,7 @@
                 <input id="item-id" type="hidden">
                 <div id="error"></div>
                 <div class="additional-infos">* povinný parameter</div>
-                <div class="well without-bottom-margin">
+                <div class="info-message without-bottom-margin">
                     <p>Po úspešnom vytvorení používateľa bude na zadanú emailovú adresu odoslané prístupové heslo.</p>
                 </div>
             </div>

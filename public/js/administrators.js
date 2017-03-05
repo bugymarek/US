@@ -2,10 +2,7 @@
 var isLoading = false;
 
 $(document).ready(function () {
-	
-	// vyhladavanie v tabulkach
-	searcher();
-    
+	   
     $('#submit-item').bind('click', onSubmitItemClick);
 
 	// Skrytie modalneho okna - restart hodnot
@@ -51,7 +48,7 @@ function onTableItemClick() {
 	// Zakladne
 	$('#item-id').val(user.administrator._id || '');
 	$('#delete-item').show();
-	$('#item-modal .well').hide();
+	$('#item-modal .info-message').hide();
 	$('.modal-title').html(user.administrator.name || 'Detail&nbsp;používateľa');
 
 	// Email pouzivatela
@@ -67,9 +64,6 @@ function onTableItemClick() {
     // Aktivaci radio button podla permissons
     $('#ADMIN').prop('checked', user.administrator.permissions === 'ADMIN');
     $('#SUPERADMIN').prop('checked', user.administrator.permissions === 'SUPERADMIN');
-	
-	// obnovim vyhladavanie kapiel
-    initializeSearch();
 }
 
 /**
@@ -103,8 +97,6 @@ function onTableItemClick() {
     // nastavenia radion button pre admina
     $('#ADMIN').prop('checked', true);
 	
-	// obnovim vyhladavanie kapiel
-    initializeSearch();
 }
 
 
@@ -191,31 +183,6 @@ function onSubmitItemClick() {
 		$('#submit-item').html('Uložiť');
 		isLoading = false;
 	});
-}
-
-function initializeSearch(){
-    var searchTerm = $(".search").val();
-        var listItem = $('.results tbody').children('tr');
-        var searchSplit = searchTerm.replace(/ /g, "'):containsi('");
-
-        $.extend($.expr[':'], {
-            'containsi': function (elem, i, match, array) {
-                return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
-            }
-        });
-
-        $(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function (e) {
-            $(this).attr('visible', 'false');
-        });
-
-        $(".results tbody tr:containsi('" + searchSplit + "')").each(function (e) {
-            $(this).attr('visible', 'true');
-        });
-}
-function searcher() {
-    $(".search").keyup(function () {
-            initializeSearch();
-		  });
 }
 
 /**

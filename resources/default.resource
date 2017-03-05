@@ -25,6 +25,7 @@ errorLogin-notVerified                          : Nepodarilo sa overiť vaše he
 
 errorAreal-unableToGet                          : Nepodarilo sa získať budovu.
 errorAreal-unableToQuery                        : Nepodarilo sa načítať zoznam arealov.
+errorAreal-notFound                             : Areál sa nepodarilo nebol nájsť.
 
 //Mapy
 

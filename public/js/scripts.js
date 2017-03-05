@@ -60,3 +60,31 @@ function showDialogMessage(text, callback) {
         closeOnConfirm: false
     }, callback || function() {});
 }
+
+/**  
+ * Vyhladavanie v tabulke
+ * 
+ * @param {string} searchInput identifikator input elementu.
+ * @param {string} tableBody identifikator tabulky pre ktoru sa aplikuje vyhladavanie.
+*/
+function search(searchInput, tableBody) {
+    return function () {
+        var searchTerm = $(searchInput).val();
+        var listItem = $('.results tbody').children('tr');
+        var searchSplit = searchTerm.replace(/ /g, "'):containsi('");
+
+        $.extend($.expr[':'], {
+            'containsi': function (elem, i, match, array) {
+                return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+            }
+        });
+
+        $(tableBody + " tbody tr").not(":containsi('" + searchSplit + "')").each(function (e) {
+            $(this).attr('visible', 'false');
+        });
+
+        $(tableBody + " tbody tr:containsi('" + searchSplit + "')").each(function (e) {
+            $(this).attr('visible', 'true');
+        });
+    }
+}

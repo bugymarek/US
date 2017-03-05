@@ -1,0 +1,174 @@
+@{meta('Domov | ' + config.name)} 
+@{head('areal.js')} 
+@{repository.active = 'areal'} 
+<div id="content-wrapper">
+    <div class="header text-center">
+        <h1>@{model && model.areal ? (model.areal.nazov || 'Detail arealu' ) : 'Nový areál'}</h1>
+    </div>
+    
+    <!--obsah-->
+
+    <!--Prepinac medzi budovou a arealom-->
+        <div class="col-md-12 with-margin-top">
+
+            <div class="form-group-table padding-zero col-md-6 switch-field">             
+                <input type="radio" id="switch_left" name="switch" value="Yes"  @{model && model.areal ? (model.areal.budova ? 'checked':'') : 'checked'} />
+                <label for="switch_left">Budova</label>
+                <input type="radio" id="switch_right" name="switch" value="No"  @{model && model.areal ? (model.areal.budova == false ? 'checked':'') : ''} />
+                <label for="switch_right">Územie</label>
+            </div>
+
+            <!--Nazov arealu -->
+            <div class="col-md-6 padding-zero">
+				<div>	
+                    <label>Názov&nbsp;*</label>						
+					<input id="areal-name" class="form-control" type="text" value="@{model && model.areal ? (model.areal.nazov || '') : ''}">
+					<input id="areal-name-hidden"  type="hidden" value="@{model && model.areal ? (model.areal.nazov || '') : ''}">
+				</div>
+            </div>
+        </div>
+
+
+        <!-- Poschodia -->
+        <div id="floors">
+            <div class="col-md-12 form-group-table">
+		        <label class="col-md-6 padding-zero align-bottom" for="areal-poschodia">Poschodia</label>
+                <button class="btn btn-submit" data-toggle="modal" data-target="#item-poschodia-modal">
+                    <span class="fa fa-plus" aria-hidden="true"></span>
+                    <span class="hide-on-mobile">&nbsp;Pridať &nbsp;poschodie</span>
+                </button>       
+		    </div>
+            <div class="col-md-12">
+                @{if model && model.areal && Array.isArray(model.areal.poschodia) && model.areal.poschodia.length > 0}
+                <table class="table with-margin table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center col-sm-6 col-xs-6">Obrázok</th>
+                            <th class="text-center col-sm-6 hide-on-mobile">Poschodie</th>
+                        <tr>
+                    </thead>
+                    <tbody>
+                    @{foreach poschodie in model.areal.poschodia}
+                        <tr class="item-detail" data-item="@{poschodie}">
+                            <td class="text-center hide-on-mobile">
+						    <a href="@{poschodie.url || 'https://s3.eu-central-1.amazonaws.com/defibrillator/placeholder.png'}">
+							    <img src="@{poschodie.url || 'https://s3.eu-central-1.amazonaws.com/defibrillator/placeholder.png'}" class="thumb">
+						    </a>
+                            </td>
+                            <td class="text-center">@{poschodie.cislo.toString() || '-'}</td>
+                        </tr>
+                    @{end}
+                    </tbody>
+                </table>    
+                @{else}
+                    <div class="info-message text-center col-md-12">
+                        <span>Pridajte poschodie</span> 
+                    </div>
+                @{fi}      
+		    </div>
+        </div>		
+        
+        <!-- Oblast mapy pre uzemie -->
+        <div id="territoryMap">
+            <div class="col-md-12 form-group-table">
+                <label>Oblas pre pridanie mapy. Treba navrhnut a dorobit</label>    
+		    </div>
+        </div>
+
+        <!-- Vrcholy -->
+        <div class="col-md-12 form-group-table">
+		    <label class="col-md-6 padding-zero" for="areal-vrcholy">Vrcholy</label>       
+                <button class=" btn btn-submit" data-toggle="modal" data-target="#node-modal">
+                    <span class="fa fa-plus" aria-hidden="true"></span>
+                    <span class="hide-on-mobile">&nbsp;Pridať &nbsp;vrchol</span>
+                </button>
+                <div class="col-md-2 float-right">
+                    <input id="node-search-name" type="text" class=" search form-control" placeholder="Názov vrcholu">
+                </div>   
+                <div class="col-md-1 text-right padding-zero float-right">
+                    <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+                </div>                              
+		</div>
+        
+        <div class="col-md-12">
+            @{if model && model.areal && Array.isArray(model.areal.vrcholy) && model.areal.vrcholy.length > 0}
+            <table id="table-nodes" class="scrollbar table-hover table-striped results">
+                <thead>
+                    <tr>
+                        <th class="text-center col-sm-6 col-xs-6">Názovs</th>
+                        <th class="text-center col-sm-6 hide-on-mobile">Typ</th>
+                    </tr>
+                </thead>
+                <tbody class="scrollbarStyle table-bordered">
+                @{foreach vrchol in model.areal.vrcholy}
+                    <tr class="node-detail" data-toggle="modal" data-target="#node-modal" data-item="@{JSON.stringify(vrchol)}">
+                        <td class="text-center">@{vrchol.nazov || '-'}</td>
+                        <td class="text-center">@{vrchol.typ || '-'}</td>
+                    </tr>
+                @{end}
+                </tbody>
+            </table>    
+            @{else}
+                <div class="info-message text-center col-md-12">
+                    <span>Pridajte poschodie</span> 
+                </div>
+            @{fi}      
+		</div>
+        <div class="text-right with-margin-top col-md-12">
+            <input  id="areal-id" type="hidden">
+            <div class="additional-infos">* povinný parameter</div>
+        </div>
+        
+    <div class="modal-footer col-md-12">
+        <div id="confirm-delete-areal" class="confirm-delete-item" hidden >Naozaj chcete odstrániť kapelu?</br></div>
+        @{if model && model.areal && model.areal._id}
+        <button id="delete-areal" type="button" class="btn btn-delete">Odstrániť</button>
+        @{fi} 
+        <button id="cancel-areal" type="button" class="btn btn-normal" data-dismiss="collapse">Zrušiť</button>
+      	<button id="submit-areal" type="button" class="btn btn-submit">Uložiť</button>
+    </div>
+</div>
+
+<!--Modal pre vrchol-->
+<div id="node-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-node-title">Nový&nbsp;vrchol</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Nazov vrcholu -->
+                <div class="col-md-12 with-margin-bottom">
+                    <div class="form-group">
+                        <label for="areal-node">Názov vrcholu&nbsp;*</label>
+                        <input id="node-name" class="form-control" type="text">      
+                    </div>           
+                </div>
+                <!-- Typ vrcholu combobox -->
+                <div class="col-md-12 with-margin-bottom">
+                    <div class="form-group">
+                        <label for="node-type">Typ&nbsp;vrcholu&nbsp;*</label>
+                        <select id="type-combobox" class="form-control">
+                            <option value="Placeholder" disabled selected hidden>Vyberte typ vrchlu...</option>
+                            <option value="Miestnosť">Miestnosť</option>
+                            <option value="Križovatka">Križovatka</option>
+                            <option value="Schodisko">Schodisko</option>
+                            <option value="Výťah">Výťah</option>
+                            <option value="Východ/Vchod">Východ/Vchod</option>
+                        </select>
+                    </div>                  
+                </div>
+                <input id="node-id"  type="hidden">
+                <div class="additional-infos">* povinný parameter</div>
+            </div>
+            <div class="modal-footer">
+                <div hidden id="confirm-delete-node" class="confirm-delete-item">Naozaj chcete odstrániť vrchol?</br>
+                </div>
+                <button id="delete-node" type="button" class="btn btn-delete" >Odstrániť</button>
+                <button id="submit-node" type="button" class="btn btn-submit">Uložiť</button>
+                <button type="button" class="btn btn-normal" data-dismiss="modal">Zrušiť</button>
+            </div>
+        </div>
+    </div>
+</div>

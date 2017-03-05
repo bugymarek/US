@@ -68,9 +68,9 @@ function getRoomsOfBuilding(id) {
             return self.throw404(new ErrorBuilder().push('errorAreal-unableToGet'));
         }
             delete model.hrany;
-            // vyberie vrcholy len typu miestnost
+            // vyberie vrcholy len typu Miestnosť
             for (var i = model.vrcholy.length - 1; i >= 0; i--) {
-                if (model.vrcholy[i].typ !== "miestnost") model.vrcholy.splice(i, 1);
+                if (model.vrcholy[i].typ !== "Miestnosť") model.vrcholy.splice(i, 1);
             }
             model.vrcholy.forEach(function (vrchol) {
                 delete vrchol.typ;

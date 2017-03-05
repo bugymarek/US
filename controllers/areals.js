@@ -3,6 +3,8 @@ var Areal = GETSCHEMA('Areal');
 
 exports.install = function () {
     F.route('/areals', viewAreals, ['authorize', 'get']);
+	F.route('/areals/{id}', viewAreal, ['authorize', 'get']);
+	F.route('/areal', viewArealForm, ['authorize', 'get']);
 };   
 
 /**
@@ -43,3 +45,36 @@ function loadAreals(next) {
 		return next();
 	});
 }
+
+/**
+ * GET - Nacitanie a zobrazenie arealu
+ */
+function viewAreal(id) {
+	var self = this;
+	id = U.parseObjectID(id);
+	if (!id) {
+		return self.throw400(new ErrorBuilder().push('errorAreal-unableToGet'));
+	}
+	Areal.get({
+		_id: id
+	}, function (err, model) {
+		if (err) {
+			return self.throw500(err);
+		}
+		if (!model || !model._id) {
+			return self.throw404(new ErrorBuilder().push('errorAreal-notFound'));
+		}
+        return self.view(
+			'areal', 
+		{
+            areal: model
+        });
+	});
+}
+
+//zobraznie prazdneho formularu pre areal
+function viewArealForm() {
+    var self = this;
+    return self.view('areal');
+}
+
