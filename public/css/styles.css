@@ -193,14 +193,14 @@ body {
     z-index: 1100!important;
 }
 
-/* Upload obrazkov na S3 */
+/* Upload obrazkov */
 
 .upload-image-wrapper {
     width: 100%;
     padding-bottom: 28%;
     padding-top: 28%;
     position: relative;
-    border: 1px dotted $lightBorderColor;
+    border: 2px dotted $lightBorderColor;
     border-radius: 4px;
     background-size: contain;
     background-repeat: no-repeat;

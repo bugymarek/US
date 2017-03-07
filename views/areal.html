@@ -33,7 +33,7 @@
         <div id="floors">
             <div class="col-md-12 form-group-table">
 		        <label class="col-md-6 padding-zero align-bottom" for="areal-poschodia">Poschodia</label>
-                <button class="btn btn-submit" data-toggle="modal" data-target="#item-poschodia-modal">
+                <button class="btn btn-submit" data-toggle="modal" data-target="#floor-modal">
                     <span class="fa fa-plus" aria-hidden="true"></span>
                     <span class="hide-on-mobile">&nbsp;Pridať &nbsp;poschodie</span>
                 </button>       
@@ -49,7 +49,7 @@
                     </thead>
                     <tbody>
                     @{foreach poschodie in model.areal.poschodia}
-                        <tr class="item-detail" data-item="@{poschodie}">
+                        <tr class="floor-detail" data-toggle="modal" data-target="#floor-modal" data-item="@{JSON.stringify(poschodie)}">
                             <td class="text-center hide-on-mobile">
 						    <a href="@{poschodie.url || 'https://s3.eu-central-1.amazonaws.com/defibrillator/placeholder.png'}">
 							    <img src="@{poschodie.url || 'https://s3.eu-central-1.amazonaws.com/defibrillator/placeholder.png'}" class="thumb">
@@ -83,7 +83,7 @@
                     <span class="hide-on-mobile">&nbsp;Pridať &nbsp;vrchol</span>
                 </button>
                 <div class="col-md-2 float-right">
-                    <input id="node-search-name" type="text" class=" search form-control" placeholder="Názov vrcholu">
+                    <input id="node-search-name" type="text" class="search form-control" placeholder="Názov vrcholu">
                 </div>   
                 <div class="col-md-1 text-right padding-zero float-right">
                     <i class="fa fa-search fa-2x" aria-hidden="true"></i>
@@ -95,7 +95,7 @@
             <table id="table-nodes" class="scrollbar table-hover table-striped results">
                 <thead>
                     <tr>
-                        <th class="text-center col-sm-6 col-xs-6">Názovs</th>
+                        <th class="text-center col-sm-6 col-xs-6">Názov</th>
                         <th class="text-center col-sm-6 hide-on-mobile">Typ</th>
                     </tr>
                 </thead>
@@ -167,6 +167,49 @@
                 </div>
                 <button id="delete-node" type="button" class="btn btn-delete" >Odstrániť</button>
                 <button id="submit-node" type="button" class="btn btn-submit">Uložiť</button>
+                <button type="button" class="btn btn-normal" data-dismiss="modal">Zrušiť</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal pre poschodia-->
+<div id="floor-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-floor-title">Nové&nbsp;poschodie</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Obrazok poschodia -->
+                <div class="col-md-12 with-margin-bottom">
+						<label for="floor-image">Obrázok *</label>
+						<div class="upload-image-wrapper">
+							<div class="upload-image-container">
+								<button type="button" class="btn btn-sm btn-normal btn-upload-image">Nahrať&nbsp;obrázok</button>
+								<input id="band-image-file" class="hidden file-input" type="file" accept="image/png, image/jpeg">
+								<input id="band-image" value="@{model && model.band ? (model.band.image || '') : ''}" class="uploaded-image-input" type="hidden">
+							</div>
+						</div>
+				</div>
+ 
+                <!-- Cislo poschodia -->
+                <div class="col-md-12 with-margin-bottom">
+                    <div class="form-group">
+                        <label for="areal-floor">Číslo&nbsp;poschodia&nbsp;*</label>
+                        <input id="floor-number" class="form-control" type="text">      
+                    </div>           
+                </div>          
+                <input id="floor-id"  type="hidden">
+                <div id="upload-image-error" class="form-group"></div>
+                <div class="additional-infos">* povinný parameter</div>
+            </div>
+            <div class="modal-footer">
+                <div hidden id="confirm-delete-floor" class="confirm-delete-item">Naozaj chcete odstrániť vrchol?</br>
+                </div>
+                <button id="delete-floor" type="button" class="btn btn-delete" >Odstrániť</button>
+                <button id="submit-floor" type="button" class="btn btn-submit">Uložiť</button>
                 <button type="button" class="btn btn-normal" data-dismiss="modal">Zrušiť</button>
             </div>
         </div>

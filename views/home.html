@@ -3,7 +3,7 @@
     @{if model && Array.isArray(model.areals) && model.areals.length > 0}   
     @{if model.areals.map(function(e) { return e.nazov; }).indexOf('Univerzita')>=0}
     <!--Vyber mapy-->
-    <div class="col-md-3">
+    <div class="col-md-12 text-left with-margin-top" >
         <div class="dropdown ">
             <button class=" dropbtn">Vyber mapu</button>
             <div class="dropdown-content">
@@ -18,7 +18,7 @@
         <h1 id="map-name" class="collapse-title">@{model.areals[model.areals.map(function(e) { return e.nazov; }).indexOf('Univerzita')].nazov}</h1>
     </div>
     <div id="buttons" class="col-md-1 text-right"></div>
-    <div class="col-md-11">
+    <div class="col-md-11 with-margin-bottom">
         <div class="imgScroll scrollbarStyle dragscroll">
             <i id="mapPoint" class="fa fa-dot-circle-o faa-pulse animated fa-2x "></i>            
             <img class="mySlides" src="@{model.areals[model.areals.map(function(e) { return e.nazov; }).indexOf('Univerzita')].url}">                   
@@ -26,7 +26,7 @@
     </div>
 
     <!--tabulka pre najkratsiu cestu-->
-    <div class="text-center col-md-12">
+    <div class="text-center with-margin-bottom col-md-12">
         <h1 id="shortestPath-name" class="collapse-title"></h1>
         <div class="col-md-12">
             <table id="table-pathSearcher" class="scrollbar table-hover  table-striped results">    
@@ -35,7 +35,7 @@
     </div>
     
     <!--Oblast vyber budovy z-->
-    <div class="text-center col-md-6">
+    <div class="text-center padding-zero col-md-6">
 
         <div class="text-left col-md-6">
             <div class="dropdown with-margin-bottom">
@@ -84,7 +84,7 @@
     </div>
     
     <!--Oblast vyber budovy do-->
-    <div class="text-center col-md-6">
+    <div class="text-center padding-zero col-md-6">
         <div class="text-left col-md-6">
             <div class="dropdown with-margin-bottom">
                 <button class=" dropbtn">Vyber budovu do</button>

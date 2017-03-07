@@ -55,7 +55,7 @@ function onNodeItemOfTable() {
     // posunutie a zobrazenie bodu na spravnom mieste
     $("#mapPoint").css({ left: (x - 12) + "px", top: (y - 14) + "px" });
     $("#mapPoint").css('z-index', 3000);
-    },50);
+    },60);
 
     
 }
