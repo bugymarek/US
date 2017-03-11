@@ -74,7 +74,7 @@ function currentDiv() {
 
 // zobrazi obrazok
 function showDivs(n) {
-    $("#mapPoint").css('z-index', 0);
+    $("#mapPoint").css('z-index', -10);
     var i;
     var x = $(".mySlides");
     for (i = 0; i < x.length; i++) {

@@ -22,10 +22,18 @@ errorLogin-notFound                             : Administrátor so zadanou emai
 errorLogin-notVerified                          : Nepodarilo sa overiť vaše heslo.
 
 // Arealy
-
+errorAreal-nazov		                        : Zadajte prosím názov areálu.
+errorAreal-budova		                        : Výberte či sa jedná o budovu alebo areál.
+errorAreal-url		                            : Výberte mapu  prosím.
+errorAreal-poschodia		                    : Pridajte poschodia prosím.
+errorAreal-vrcholy		                        : Pridajte vrcholy prosím.
 errorAreal-unableToGet                          : Nepodarilo sa získať budovu.
 errorAreal-unableToQuery                        : Nepodarilo sa načítať zoznam arealov.
 errorAreal-notFound                             : Areál sa nepodarilo nebol nájsť.
+errorAreal-unableToCreate                       : Nepodarilo sa vytvoriť areál.
+errorAreal-unableToUpdate				        : Nepodarilo sa aktualizovať areál.
+errorAreal-unableToDelete				        : Nepodarilo sa odstrániť areál.
+errorAreal-alreadyExists                        : Areál so zadaným názvom už existuje.
 
 //Mapy
 

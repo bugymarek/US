@@ -9,9 +9,11 @@ exports.install = function () {
 
 function uploadImage() {
 	var self = this;
-  var name = crypto.randomBytes(25).toString('hex');
+  var name = crypto.randomBytes(25).toString('hex') + '.';
   var file = self.files[0];
-  var type = '.' + file.type.split("/")[1];
+
+  var type = file.type.split("/")[1];
+  if(type === 'jpeg') type = 'jpg';
   file.rename(F.path.public('uploads/' + name + type));
- return self.json({url: '/uploads/' + name + type[0]});
+ return self.json({url: '/uploads/' + name + type});
 }

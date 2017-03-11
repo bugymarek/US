@@ -2,18 +2,16 @@ exports.id = 'Areals';
 
 var Areal = NEWSCHEMA('Areal');
 var Vrchol = NEWSCHEMA('Vrchol');
-var Hrana = NEWSCHEMA('Hrana');
 var Poschodie = NEWSCHEMA('Poschodie');
 
 Areal.define('_id', Object);
 Areal.define('nazov', String, true);
 Areal.define('budova', Boolean, true);
 Areal.define('vrcholy', Array, true);
-Areal.define('hrany', String, true);
 Areal.define('url', String, true);
 Areal.define('poschodia', Array, true);
 
-Areal.constant('allowed', ['nazov', 'budova', 'vrcholy', 'hrany', 'url', 'poschodia']);
+Areal.constant('allowed', ['nazov', 'budova', 'vrcholy', 'url', 'poschodia']);
 Areal.setPrefix('errorAreal-');
 
 Areal.setPrepare(onPrepare);
@@ -28,15 +26,6 @@ Vrchol.setPrefix('errorEdges-');
 Vrchol.setPrepare(onPrepare);
 Vrchol.setValidate(onValidate);
 
-Hrana.define('nazov', String, true);
-Hrana.define('typ', String, true);
-
-Hrana.constant('allowed', ['nazov', 'typ']);
-Hrana.setPrefix('errorNodes-');
-
-Hrana.setPrepare(onPrepare);
-Hrana.setValidate(onValidate);
-
 Poschodie.define('cislo', String, true);
 Poschodie.define('url', String, true);
 
@@ -49,37 +38,40 @@ Poschodie.setValidate(onValidate);
 function onPrepare(name, value) {
     switch (name) {
         case 'nazov':
-        case 'budova':
         case 'typ':
         case 'url':
+        case 'cislo':
             return value || null;
+        case 'budova':
+            return value || value == false ? value : null
         case 'vrcholy':
             return Vrchol.prepare(value);
-        case 'hrany':
-            return Hrana.prepare(value);
         case 'poschodia':
             return Poschodie.prepare(value);
     }
 }
 
-function onValidate(name, value) {
+function onValidate(name, value, schema, model) {
     switch (name) {
         case 'nazov':
-        case 'budova':
         case 'typ':
-            return !U.isNullOrEmpty(value);
+            return !U.isEmpty(value);
+        case 'cislo':
+            return !isNaN(value);
         case 'url':
-            return U.isURL(value);
+            return model.budova ? true : !U.isEmpty(value);
+        case 'budova':
+            return value == null ? false : true;
         case 'vrcholy':
-            return Array.isArray(value) && value.findIndex(i => Vrchol.validate(i).hasError()) < 0;
-        case 'hrana':
-            return Array.isArray(value) && value.findIndex(i => Hrana.validate(i).hasError()) < 0;
+            return Array.isArray(value) && value.findIndex(i => Vrchol.validate(i).hasError()) < 0 && value.length > 0;
         case 'poschodia':
-            return Array.isArray(value) && value.findIndex(i => Poschodie.validate(i).hasError()) < 0;     
+            return model.budova ? Array.isArray(value) && value.length > 0 : true;     
         default:
             return false;
     }
 }
+
+
 
 /**
  * Nacitanie zoznamu budov podla filtra.
@@ -142,6 +134,138 @@ Areal.addOperation('count', function (error, model, options, callback) {
     });
 });
 
+/**
+ * Vytvorenie noveho arealu alebo aktualizacia existujuceho arealu.
+ * 
+ * @param {Object} error Chyba.
+ * @param {Object} model Aktualny objekt kapely.
+ * @param {Object} options Parametre funkcie.
+ * @return {*} areal.
+ */
+Areal.setSave(function (error, model, options, callback) {
+    var isUpdate = model._id ? true : false;
+    if (isUpdate) {
+        updateEntity(error, model, options, callback);
+    }
+    else {
+        createEntity(error, model, options, callback);
+    }
+});
+
+/**
+ * Vytvorenie novej entity - pomocna funkcia.
+ */
+function createEntity(error, model, options, callback) {
+    // skontrolujem, ci sa kapela s danym nazvom uz nenachadza v databaze
+    model.$workflow('checkIfNotExists', function (err) {
+        if (err) {
+            error.push(err);
+            return callback();
+        }
+
+        DATABASE('areals').insert(model.$clean(), function (err, result) {
+            if (err) {
+                error.push('unableToCreate');
+                return callback();
+            }
+            model._id = result.insertedCount == 1 ? result.ops[0]._id : null;
+            return callback();
+        });
+    });
+}
+
+/**
+ * Aktualizacia entity - pomocna funkcia.
+ */
+function updateEntity(error, model, options, callback) {
+    // skontrolujem, ci sa kapela s danym nazvom uz nenachadza v databaze
+    model.$workflow('checkIfNotExists', function (err) {
+        if (err) {
+            error.push(err);
+            return callback();
+        }
+        DATABASE('areals').update({
+            _id: model._id
+        }, {
+                $set: model.$clean(),
+
+            }, function (err) {
+                if (err) {
+                    error.push('unableToUpdate');
+                    return callback();
+                }
+                return callback();
+            });
+    });
+}
+
+/**
+ * Aktualizacia atributov kapely.
+ * 
+ * Zo vstupnych parametrov sa vyberu len tie, ktorych aktualizacia je povolena.
+ * Zoznam atributov, ktore je povolene aktualizovat sa nachadza v konstante 'allowed'.
+ * 
+ * Nasledne sa aktualizovany objekt upravy (prepare) a zvaliduje (validate).
+ * 
+ * @param {Object} error Chyba.
+ * @param {Object} model Aktualny objekt kapely.
+ * @param {Object} options Parametre funkcie.
+ */
+Areal.addWorkflow('update', function (error, model, options, callback) {
+    var allowed = model.$constant('allowed');
+    Object.keys(options).forEach(function (key) {
+        if (allowed.indexOf(key) >= 0) {
+            model[key] = options[key];
+        }
+    });
+    U.copy(model.$prepare().$clean(), model);
+    error.push(model.$validate().prepare());
+    return callback();
+});
+
+
+/**
+ * Overenie, ci sa v databaze uz nenachadza entita s daným nazvom.
+ * 
+ * @param {Object} error Chyba.
+ * @param {Object} model Aktualny objekt pouzivatela.
+ * @param {Object} options Parametre funkcie.
+ * @return {*}
+ */
+Areal.addWorkflow('checkIfNotExists', function (error, model, options, callback) {
+    var nameLowerCase = new RegExp(["^", model.nazov, "$"].join(""), "i");
+    DATABASE('areals').findOne({
+        $and: [
+                { nazov: nameLowerCase },
+                { _id: { $ne: model._id} },    
+              ]       
+    }, function (err, areal) {
+        if (areal) {
+            error.push('alreadyExists');
+            return callback();
+        }
+        return callback();
+    });
+});
+
+/**
+ * Odstranenie existujuceho arealu.
+ * 
+ * @param {Object} error Chyba.
+ * @param {Object} options Parametre funkcie.
+ * @return {*}
+ */
+Areal.setRemove(function (error, options, callback) {
+    DATABASE('areals').remove({
+        _id: options._id
+    }, function (err) {
+        if (err) {
+            error.push('unableToDelete');
+            return callback();
+        }
+        return callback();
+    });
+});
+
 exports.Areal = Areal;
 exports.Vrchol = Vrchol;
-exports.Hrana = Hrana;

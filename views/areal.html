@@ -20,7 +20,7 @@
 
             <!--Nazov arealu -->
             <div class="col-md-6 padding-zero">
-				<div>	
+				<div class="form-group">	
                     <label>Názov&nbsp;*</label>						
 					<input id="areal-name" class="form-control" type="text" value="@{model && model.areal ? (model.areal.nazov || '') : ''}">
 					<input id="areal-name-hidden"  type="hidden" value="@{model && model.areal ? (model.areal.nazov || '') : ''}">
@@ -39,8 +39,8 @@
                 </button>       
 		    </div>
             <div class="col-md-12">
-                @{if model && model.areal && Array.isArray(model.areal.poschodia) && model.areal.poschodia.length > 0}
-                <table class="table with-margin table-bordered table-striped table-hover">
+                
+                <table id="table-floors" class="table with-margin table-bordered table-striped table-hover @{(model && model.areal && Array.isArray(model.areal.poschodia) && model.areal.poschodia.length > 0) ? '' : 'hide-on-desktop'}">
                     <thead>
                         <tr>
                             <th class="text-center col-sm-6 col-xs-6">Obrázok</th>
@@ -48,30 +48,38 @@
                         <tr>
                     </thead>
                     <tbody>
+                @{if model && model.areal && Array.isArray(model.areal.poschodia) && model.areal.poschodia.length > 0}
                     @{foreach poschodie in model.areal.poschodia}
                         <tr class="floor-detail" data-toggle="modal" data-target="#floor-modal" data-item="@{JSON.stringify(poschodie)}">
                             <td class="text-center hide-on-mobile">
-						    <a href="@{poschodie.url || 'https://s3.eu-central-1.amazonaws.com/defibrillator/placeholder.png'}">
-							    <img src="@{poschodie.url || 'https://s3.eu-central-1.amazonaws.com/defibrillator/placeholder.png'}" class="thumb">
+						    <a href="@{poschodie.url || '/uploads/placeholder.jpg'}">
+							    <img src="@{poschodie.url || '/uploads/placeholder.jpg'}" class="thumb">
 						    </a>
                             </td>
                             <td class="text-center">@{poschodie.cislo.toString() || '-'}</td>
                         </tr>
-                    @{end}
+                    @{end}                                      
+                @{fi} 
                     </tbody>
-                </table>    
-                @{else}
-                    <div class="info-message text-center col-md-12">
-                        <span>Pridajte poschodie</span> 
-                    </div>
-                @{fi}      
+                </table>  
+                <!--Informacna sprava ak je tabulka pre vrcholy prazdna -->
+                <div id="floors-empty" class="info-message text-center col-md-12 @{(model && model.areal && Array.isArray(model.areal.poschodia) && model.areal.poschodia.length > 0) ? 'hide-on-desktop' : ''}">
+                    <span>Pridajte poschodie</span> 
+                </div>   
 		    </div>
-        </div>		
-        
+        </div>
+     		      
         <!-- Oblast mapy pre uzemie -->
         <div id="territoryMap">
-            <div class="col-md-12 form-group-table">
-                <label>Oblas pre pridanie mapy. Treba navrhnut a dorobit</label>    
+            <div class="col-md-12 with-margin-bottom">
+                <label for="map-image">Mapa *</label>
+				<div class="upload-image-wrapper">
+					<div class="upload-image-container">
+						<button type="button" class="btn btn-sm btn-normal btn-upload-image">Nahrať&nbsp;obrázok</button>
+						<input id="map-image-file" class="hidden file-input" type="file" accept="image/png, image/jpeg">
+						<input id="map-image" value="@{model && model.areal ? (model.areal.url || '') : ''}" class="uploaded-image-input" type="hidden">
+					</div>
+				</div>
 		    </div>
         </div>
 
@@ -91,8 +99,7 @@
 		</div>
         
         <div class="col-md-12">
-            @{if model && model.areal && Array.isArray(model.areal.vrcholy) && model.areal.vrcholy.length > 0}
-            <table id="table-nodes" class="scrollbar table-hover table-striped results">
+            <table id="table-nodes" class="scrollbar table-hover table-striped results @{(model && model.areal && Array.isArray(model.areal.vrcholy) && model.areal.vrcholy.length > 0) ? '' : 'hide-on-desktop'}">
                 <thead>
                     <tr>
                         <th class="text-center col-sm-6 col-xs-6">Názov</th>
@@ -100,22 +107,25 @@
                     </tr>
                 </thead>
                 <tbody class="scrollbarStyle table-bordered">
+            @{if model && model.areal && Array.isArray(model.areal.vrcholy) && model.areal.vrcholy.length > 0}
                 @{foreach vrchol in model.areal.vrcholy}
                     <tr class="node-detail" data-toggle="modal" data-target="#node-modal" data-item="@{JSON.stringify(vrchol)}">
                         <td class="text-center">@{vrchol.nazov || '-'}</td>
                         <td class="text-center">@{vrchol.typ || '-'}</td>
                     </tr>
-                @{end}
+                @{end}                            
+            @{fi} 
                 </tbody>
-            </table>    
-            @{else}
-                <div class="info-message text-center col-md-12">
-                    <span>Pridajte poschodie</span> 
-                </div>
-            @{fi}      
+            </table>  
+            <!--Informacna sprava ak je tabulka pre vrcholy prazdna -->
+            <div id="nodes-empty" class="info-message text-center col-md-12 @{(model && model.areal && Array.isArray(model.areal.vrcholy) && model.areal.vrcholy.length > 0) ? 'hide-on-desktop' : ''}">
+                    <span>Pridajte vrchol</span> 
+            </div>  
 		</div>
+        
         <div class="text-right with-margin-top col-md-12">
-            <input  id="areal-id" type="hidden">
+            <input  id="areal-id" value="@{model && model.areal ? (model.areal._id || '') : ''}" type="hidden">
+            <div id="error"></div>
             <div class="additional-infos">* povinný parameter</div>
         </div>
         
@@ -188,8 +198,8 @@
 						<div class="upload-image-wrapper">
 							<div class="upload-image-container">
 								<button type="button" class="btn btn-sm btn-normal btn-upload-image">Nahrať&nbsp;obrázok</button>
-								<input id="band-image-file" class="hidden file-input" type="file" accept="image/png, image/jpeg">
-								<input id="band-image" value="@{model && model.band ? (model.band.image || '') : ''}" class="uploaded-image-input" type="hidden">
+								<input id="floor-image-file" class="hidden file-input" type="file" accept="image/png, image/jpeg">
+								<input id="floor-image" class="uploaded-image-input" type="hidden" >
 							</div>
 						</div>
 				</div>
@@ -202,16 +212,15 @@
                     </div>           
                 </div>          
                 <input id="floor-id"  type="hidden">
-                <div id="upload-image-error" class="form-group"></div>
-                <div class="additional-infos">* povinný parameter</div>
-            </div>
-            <div class="modal-footer">
-                <div hidden id="confirm-delete-floor" class="confirm-delete-item">Naozaj chcete odstrániť vrchol?</br>
+                    <div class="additional-infos">* povinný parameter</div>
                 </div>
-                <button id="delete-floor" type="button" class="btn btn-delete" >Odstrániť</button>
-                <button id="submit-floor" type="button" class="btn btn-submit">Uložiť</button>
-                <button type="button" class="btn btn-normal" data-dismiss="modal">Zrušiť</button>
-            </div>
+                <div class="modal-footer">
+                    <div hidden id="confirm-delete-floor" class="confirm-delete-item">Naozaj chcete odstrániť vrchol?</br>
+                    </div>
+                    <button id="delete-floor" type="button" class="btn btn-delete" >Odstrániť</button>
+                    <button id="submit-floor" type="button" class="btn btn-submit">Uložiť</button>
+                    <button type="button" class="btn btn-normal" data-dismiss="modal">Zrušiť</button>
+                </div>
         </div>
     </div>
 </div>
