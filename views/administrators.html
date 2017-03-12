@@ -19,7 +19,7 @@
     <thead>
         <tr>
             <th class="text-left col-sm-2 col-xs-10">Meno</th>
-            <th class="text-left col-sm-2 hide-on-mobile">Email</th>
+            <th class="text-left col-sm-2 hide-on-mobile">Používateľské meno</th>
             <th class="text-left col-sm-2 hide-on-mobile">Oprávnenie</th>
             <th class="text-left col-sm-2 hide-on-mobile">Vytvorený</th>
             <th class="text-left col-sm-2 hide-on-mobile">Aktualizovaný</th>
@@ -57,15 +57,15 @@
                 <h4 class="modal-title">Nový&nbsp;používateľ</h4>
             </div>
             <div class="modal-body">
-                <!-- Email pouzivatela -->
+                <!-- Používateľské meno -->
                 <div class="form-group">
                     <label for="user-email">Email&nbsp;*</label>
-                    <input id="user-email" class="form-control" type="text">
+                    <input id="user-email" class="form-control with-margin-bottom" type="text">
                 </div>
                 <!-- Meno pouzivatela -->
                 <div class="form-group">
                     <label for="user-name">Meno&nbsp;*</label>
-                    <input id="user-name" class="form-control" type="text">
+                    <input id="user-name" class="form-control <with-margin-bottom></with-margin-bottom>" type="text">
                 </div>
                 
                 <div class="row">
@@ -90,9 +90,6 @@
                 <input id="item-id" type="hidden">
                 <div id="error"></div>
                 <div class="additional-infos">* povinný parameter</div>
-                <div class="info-message without-bottom-margin">
-                    <p>Po úspešnom vytvorení používateľa bude na zadanú emailovú adresu odoslané prístupové heslo.</p>
-                </div>
             </div>
             <div class="modal-footer">
                 <div hidden id="confirm-delete-item" class="confirm-delete-item">Naozaj chcete odstrániť používateľa?</br>

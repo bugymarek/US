@@ -9,9 +9,9 @@ AdministratorLogin.setPrefix('errorLogin-');
 AdministratorLogin.setValidate(function (name, value) {
     switch (name) {
         case 'email':
-            return U.isEmail(value) && value.length >= 6 && value.length <= 200;
+            return !U.isEmpty(value) && value.length >= 6 && value.length <= 200;
         case 'password':
-            return !U.isNullOrEmpty(value) && value.length >= 6 && value.length <= 200;
+            return !U.isEmpty(value) && value.length >= 6 && value.length <= 200;
         default:
             return false;
     }
@@ -79,6 +79,7 @@ Administrator.setDefault(function (name) {
 Administrator.setPrepare(function (name, value) {
     switch (name) {
         case 'email':
+            return value || null;
         case 'hash':
         case 'salt':
             return value.toLowerCase() || null;
@@ -90,11 +91,11 @@ Administrator.setPrepare(function (name, value) {
 Administrator.setValidate(function (name, value) {
     switch (name) {
         case 'name':
-            return !U.isNullOrEmpty(value) && value.length >= 3;
+            return !U.isEmpty(value) && value.length >= 3;
         case 'password':
-            return !U.isNullOrEmpty(value) && value.length >= 6 && value.length <= 200;
+            return !U.isEmpty(value) && value.length >= 6 && value.length <= 200;
         case 'email':
-            return U.isEmail(value) && value.length >= 6 && value.length <= 200;
+            return !U.isEmpty(value) && value.length >= 6 && value.length <= 200;
         case 'permissions':
             return U.isAdministratorPermissions(value);
         default:
@@ -247,7 +248,7 @@ Administrator.addWorkflow('update', function (error, model, options, callback) {
 });
 
 /**
- * Overenie, ci sa v databaze uz nenachadza pouzivatel s danym emailom.
+ * Overenie, ci sa v databaze uz nenachadza pouzivatel s meno
  * 
  * @param {Object} error Chyba.
  * @param {Object} model Aktualny objekt pouzivatela.
@@ -316,14 +317,14 @@ function updateEntity(error, model, options, callback) {
  * Vytvorenie novej entity - pomocna funkcia.
  */
 function createEntity(error, model, options, callback) {
-    // skontrolujem, ci sa pouzivatel so zadanym emailom uz v databaze nenachadza
+    // skontrolujem, ci sa pouzivatel so zadanym meno uz v databaze nenachadza
     model.$workflow('checkIfNotExists', function (err) {
         if (err) {
             error.push(err);
             return callback();
         }
         // vygenerujem nove nahodne heslo a zahashujem ho
-        var password = generatePassword();
+        var password = generatePassword();      
         U.hashNewPassword(password, function (err, data) {
             if (err) {
                 error.push('unableToCreate');

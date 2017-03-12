@@ -4,10 +4,10 @@ var Administrator = GETSCHEMA('Administrator');
 
 
 exports.install = function () {
-    F.route('/administrators', viewAdministrators, ['authorize', 'get']);
-    F.route('/administrators', createAdministrator, ['authorize', 'xhr', 'post', '*Administrator']);
-    F.route('/administrators/{id}', deleteAdministrator, ['authorize', 'xhr', 'delete']);
-    F.route('/administrators/{id}', updateAdmnistrator, ['authorize', 'xhr', 'put']);
+	F.route('/administrators', viewAdministrators, ['authorize', 'get']);
+	F.route('/administrators', createAdministrator, ['authorize', 'xhr', 'post', '*Administrator']);
+	F.route('/administrators/{id}', deleteAdministrator, ['authorize', 'xhr', 'delete']);
+	F.route('/administrators/{id}', updateAdmnistrator, ['authorize', 'xhr', 'put']);
 };
 
 
@@ -20,15 +20,20 @@ function createAdministrator() {
 	if (self.user.permissions !== 'SUPERADMIN') {
 		return self.throw403(new ErrorBuilder().push('errorAdministrator-permissions'));
 	}
-	self.body.$save(function (err) {
-        if (err) {
-            return self.throw500(err);
-        }
-        sendEmailNotification(self.body.email, self.body.password);
-        return self.json({
-            id: self.body._id
-        });
-    });
+	Administrator.make(self.body, function (err, model) {
+		if (err) {
+			return self.throw400(err);
+		}
+		model.$save(function (err, obj) {
+			if (err) {
+				return self.throw500(err);
+			}
+			 sendEmailNotification(obj.email, obj.password);
+			 return self.json({
+			     id: obj._id
+			 });
+		});
+	});
 }
 
 /**
@@ -65,9 +70,9 @@ function updateAdmnistrator(id) {
 		return self.throw400(new ErrorBuilder().push('errorAdministrator-unableToUpdate'));
 	}
 	Administrator.get({
-        filter: {
+		filter: {
 			_id: id
-        }
+		}
 	}, function (err, model) {
 		if (err) {
 			return self.throw500(err);
@@ -97,24 +102,24 @@ function updateAdmnistrator(id) {
  */
 
 function deleteAdministrator(id) {
-    var self = this;
+	var self = this;
 	if (self.user.permissions !== 'SUPERADMIN') {
 		return self.throw403(new ErrorBuilder().push('errorAdministrator-permissions'));
 	}
-    id = U.parseObjectID(id);
-    if (!id) {
-        return self.throw400(new ErrorBuilder().push('errorAdministrator-unableToDelete'))
-    }
-    Administrator.remove({
-        _id: id
-    }, function (err) {
-        if (err) {
-            return self.throw500;
-        }
-        return self.json({
-            id: id
-        });
-    });
+	id = U.parseObjectID(id);
+	if (!id) {
+		return self.throw400(new ErrorBuilder().push('errorAdministrator-unableToDelete'))
+	}
+	Administrator.remove({
+		_id: id
+	}, function (err) {
+		if (err) {
+			return self.throw500;
+		}
+		return self.json({
+			id: id
+		});
+	});
 }
 
 /**
@@ -125,7 +130,7 @@ function viewAdministrators() {
 	id = U.parseObjectID(self.user._id);
 	if (self.user.permissions !== 'SUPERADMIN' || !id) {
 		return self.redirect('/');
-	}	
+	}
 	var limit = 10;
 	var page = U.parseInt(self.query.p, 1);
 	if (page <= 0 || (self.query.p && self.query.p != page.toString())) {
@@ -146,7 +151,7 @@ function viewAdministrators() {
 		if (context.error.hasError()) {
 			return self.throw500(context.error);
 		}
-		if ((page * limit - limit) >= context.results.count && page >  1) {
+		if ((page * limit - limit) >= context.results.count && page > 1) {
 			return self.redirect('/administrators');
 		}
 		context.results.pagination = new Builders.Pagination(context.results.count, page, limit, '?p={0}');

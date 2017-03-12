@@ -84,7 +84,7 @@ function onTableItemClick() {
 	$('#item-modal .well').show();
 	$('.modal-title').html('Nový&nbsp;používateľ');
 
-	// Email pouzivatela
+	// Prihlasovacie meno pouzivatela
 	$('#user-email').val('');
 	$('#user-email').prop('disabled', false);
 

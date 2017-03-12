@@ -1,4 +1,3 @@
-var genres = ['rock', 'elektro', 'alternative', 'metal', 'reggae', 'blues', 'jazz', 'drumbass', 'punk', 'pop', 'disco', 'hiphop', 'country'];
 
 /**
  * Validacia vstupnych parametrov requestov pre API a Web (administracne rozhranie).
@@ -12,12 +11,8 @@ var genres = ['rock', 'elektro', 'alternative', 'metal', 'reggae', 'blues', 'jaz
  */
 F.onValidate = function(name, value, path, model, schema) {
 	switch (name) {
-		case 'email':
-			return U.isEmail(value);
 		case 'password':
-			return !U.isNullOrEmpty(value);
-        case 'genre':
-            return !U.isNullOrEmpty(value) && genres.indexOf(value) >= 0;
+			return !U.isEmpty(value);
 		default:
 			return false;
 	};

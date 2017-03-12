@@ -44,25 +44,25 @@ function onNodeItemOfTable() {
     var y = node.suradnicaY;
 
     // musim pockat, az potom mozem skrolovat a nastavit bod
-    setTimeout(function() {
-    var bottomSliderHeight = 17;
-    var heightMapWindows = $(".imgScroll").height() - bottomSliderHeight;
-    var rightSliderWidth = 10;
-    var widthtMapWindows = $(".imgScroll").width() - rightSliderWidth;
-    $(".imgScroll").scrollTop(y - heightMapWindows / 2);
-    $(".imgScroll").scrollLeft(x - widthtMapWindows / 2);
+    setTimeout(function () {
+        var bottomSliderHeight = 17;
+        var heightMapWindows = $(".imgScroll").height() - bottomSliderHeight;
+        var rightSliderWidth = 10;
+        var widthtMapWindows = $(".imgScroll").width() - rightSliderWidth;
+        $(".imgScroll").scrollTop(y - heightMapWindows / 2);
+        $(".imgScroll").scrollLeft(x - widthtMapWindows / 2);
 
-    // posunutie a zobrazenie bodu na spravnom mieste
-    $("#mapPoint").css({ left: (x - 12) + "px", top: (y - 14) + "px" });
-    $("#mapPoint").css('z-index', 3000);
-    },60);
+        // posunutie a zobrazenie bodu na spravnom mieste
+        $("#mapPoint").css({ left: (x - 12) + "px", top: (y - 14) + "px" });
+        $("#mapPoint").css('z-index', 3000);
+    }, 60);
 
-    
+
 }
 
 // nastavenie konkretnej mapy po kliknuti v drop down menu
-function onDropdownMapClick(){
-    map =  $(this).data().item;
+function onDropdownMapClick() {
+    map = $(this).data().item;
     setMap(map, 1)
 }
 
@@ -91,7 +91,7 @@ function showDivs(n) {
 */
 // nacitanie tabulky miestnosti pre budovu Z
 function onDropdownBuildingItemClick(idNameOfBuilding, idTableOfRooms) {
-    return function () {      
+    return function () {
         var buildingID = $(this).data().item;
         var url = '/building/' + buildingID;
         $.ajax({
@@ -237,7 +237,7 @@ function createTableOfShortestPath(path) {
             row.append(nodeTo);
             $('#table-pathSearcher tbody').append(row);
         };
-    } else { 
+    } else {
         showErrorMessage('Cesta nexistuje! Skontrolujte prosím vtupy.');
         $('#roomFrom-search-name').closest('.form-group').addClass('has-error');
         $('#roomTo-search-name').closest('.form-group').addClass('has-error');
@@ -248,41 +248,41 @@ function createTableOfShortestPath(path) {
  * Nastavenie mapy podla 
  * param object - objekt mapy obsahujuci data
  * @param {object} object objekt mapy obsahujuci data
- */ 
-function setMap(object, floor) {  
-        var map = object;
+ */
+function setMap(object, floor) {
+    var map = object;
 
-        // zmen nazov mapy
-        $('#map-name').text(map.nazov);
+    // zmen nazov mapy
+    $('#map-name').text(map.nazov);
 
-        // pridanie tlacidiel pre poschodia
-        $('#buttons').empty();
-        $('.imgScroll').empty();
-        var mapPoint =  $('<i id="mapPoint" class="fa fa-dot-circle-o faa-pulse animated fa-2x "></i>');
-        $('.imgScroll').append(mapPoint);
-        if (map.poschodia && Array.isArray(map.poschodia) && map.poschodia.length > 0) {
-            var i = 1;
-            map.poschodia.forEach(function (element) {
-                var html = '<button class="btn btn-normal" data-item=' + i + '>' + element.cislo + ' </button>';
-                var row = $(html);
-                row.data('item', i);
-                $('#buttons').append(row);
-                i++;
-            });
+    // pridanie tlacidiel pre poschodia
+    $('#buttons').empty();
+    $('.imgScroll').empty();
+    var mapPoint = $('<i id="mapPoint" class="fa fa-dot-circle-o faa-pulse animated fa-2x "></i>');
+    $('.imgScroll').append(mapPoint);
+    if (map.poschodia && Array.isArray(map.poschodia) && map.poschodia.length > 0) {
+        var i = 1;
+        map.poschodia.forEach(function (element) {
+            var html = '<button class="btn btn-normal" data-item=' + i + '>' + element.cislo + ' </button>';
+            var row = $(html);
+            row.data('item', i);
+            $('#buttons').append(row);
+            i++;
+        });
 
-            // pridanie obrazkov map pre poschodia 
-            map.poschodia.forEach(function (element) {
-                var html = '<img class="mySlides" src="' + element.url + '">';
-                var row = $(html);
-                $('.imgScroll').append(row);
-            });
-        } else {
-            var html = '<img class="mySlides" src="' + map.url + '">';
+        // pridanie obrazkov map pre poschodia 
+        map.poschodia.forEach(function (element) {
+            var html = '<img class="mySlides" src="' + element.url + '">';
             var row = $(html);
             $('.imgScroll').append(row);
-        }
-        // nastavenie prveho obrazku 
-        showDivs(floor);    
+        });
+    } else {
+        var html = '<img class="mySlides" src="' + map.url + '">';
+        var row = $(html);
+        $('.imgScroll').append(row);
+    }
+    // nastavenie prveho obrazku 
+    showDivs(floor);
 }
 
 /** 
@@ -291,21 +291,21 @@ function setMap(object, floor) {
  *  @param {int} floor poschodie
  */
 function setMapAndFloor(name, floor) {
-        var url = '/map/' + name;
-        $.ajax({
-            method: 'get',
-            url: url
-        }).done(function (res) {
-            setMap(res, floor)      
-        }).fail(function (res) {
-            var message = '';
-            if (res && res.responseJSON && Array.isArray(res.responseJSON.errors)) {
-                if (res.responseJSON.errors.length > 0) {
-                    res.responseJSON.errors.forEach(function (e) {
-                        message += e.error + '<br/>';
-                    });
-                }
+    var url = '/map/' + name;
+    $.ajax({
+        method: 'get',
+        url: url
+    }).done(function (res) {
+        setMap(res, floor)
+    }).fail(function (res) {
+        var message = '';
+        if (res && res.responseJSON && Array.isArray(res.responseJSON.errors)) {
+            if (res.responseJSON.errors.length > 0) {
+                res.responseJSON.errors.forEach(function (e) {
+                    message += e.error + '<br/>';
+                });
             }
-            showErrorMessage(message || 'Nepodarilo sa načítať budovu.');
-        });
+        }
+        showErrorMessage(message || 'Nepodarilo sa načítať budovu.');
+    });
 }

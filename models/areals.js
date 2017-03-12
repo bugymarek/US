@@ -162,12 +162,11 @@ function createEntity(error, model, options, callback) {
             error.push(err);
             return callback();
         }
-
         DATABASE('areals').insert(model.$clean(), function (err, result) {
             if (err) {
                 error.push('unableToCreate');
                 return callback();
-            }
+            }       
             model._id = result.insertedCount == 1 ? result.ops[0]._id : null;
             return callback();
         });

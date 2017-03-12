@@ -4,3 +4,8 @@ secret                          : e980c6704a56152532682d29c5d331c067ed5e59
 cookie							: __user
 allow-custom-titles				: true
 address							: https://bakalarka.najkratsiaCesta.com
+
+// Mail settings
+mail.smtp                       : smtp.gmail.com
+mail.smtp.options               : { "secure": true, "port": 465, "user": "bakalarkanajkratsiacesta@gmail.com", "password": "bakalarka123456789", "timeout": 10000 }
+mail.address.from               : bakalarkanajkratsiacesta@gmail.com
