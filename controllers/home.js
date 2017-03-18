@@ -3,7 +3,7 @@ var Areal = GETSCHEMA('Areal');
 
 exports.install = function () {
     F.route('/', viewDomov, ['get']);
-    F.route('/map/{name}', getMapOfAreal, ['get']);
+    F.route('/map/{name}', getMapsOfAreal, ['get']);
     F.route('/building/{id}', getRoomsOfBuilding, ['get']);
 };    
 
@@ -33,7 +33,7 @@ function viewDomov() {
     });
 }
 
-// nacitanie budov
+// Nacitanie arealalov
 function loadAreals(next) {
     var self = this;
     Areal.query({
@@ -79,8 +79,8 @@ function getRoomsOfBuilding(id) {
     });
 }
 
-// vrati mapu arealu podla nazvu.
-function getMapOfAreal(name) {
+// vrati mapy arealu podla nazvu.
+function getMapsOfAreal(name) {
     var self = this;
     Areal.get({
         nazov: name
@@ -92,7 +92,6 @@ function getMapOfAreal(name) {
             return self.throw404(new ErrorBuilder().push('errorAreal-unableToGet'));
         }
         delete model._id
-        delete model.vrcholy;
         delete model.vrcholy;
         delete model.budova;
         return self.json(model);

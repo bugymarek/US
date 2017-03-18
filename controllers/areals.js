@@ -11,7 +11,7 @@ exports.install = function () {
 };   
 
 /**
- * GET - Nacitanie a zobrazenie zoznamu arealov + strankovanie vysledkov.
+ * GET - Nacitanie a zobrazenie zoznamu arealov
  */
 function viewAreals() {
 	var self = this;

@@ -62,6 +62,13 @@
                                         </a>
                                     </li>
                                     @{fi} 
+                                    @{if user}
+                                    <li>
+                                        <a class="menu-item @{if repository.active == 'graf'} active@{fi}" href="/graf">
+                                            <i class="fa fa-share-alt" aria-hidden="true"></i> Graf
+                                        </a>
+                                    </li>
+                                    @{fi} 
                                     @{if user && user.permissions === 'SUPERADMIN'}
                                     <li>
                                         <a class="menu-item @{if repository.active == 'administrators'} active@{fi}" href="/administrators">

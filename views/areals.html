@@ -19,13 +19,13 @@
         <tr>
             <th class="text-left col-sm-6 col-xs-6">Názov</th>
             <th class="text-left col-sm-6 col-xs-6">Typ</th>
-            <tr>
+        <tr>
     </thead>
     <tbody>
         @{foreach areal in model.areals}
         <tr class="item-detail" data-item="@{areal._id.toString()}">
             <td class="text-left">@{areal.nazov || '-'}</td>
-            <td class="text-left">@{areal.budova ? 'Budova' : 'Územie' || '-'}</td>
+            <td class="text-left">@{(areal.budova && areal.budova === true) ? 'Budova' : 'Územie' || '-'}</td>
         </tr>
         @{end}
     </tbody>

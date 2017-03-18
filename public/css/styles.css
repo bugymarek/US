@@ -329,7 +329,7 @@ table.with-margin {
     border-left-color: $lightBlueColor;
 }
 
-.table-bordered > thead > tr > th:nth-child(2) {
+.table-bordered > thead > tr > th:last-of-type {
     border-right-color: $lightBlueColor;
 }
 
@@ -847,6 +847,7 @@ table thead {
 }
 
 #mapPoint{
+    z-index: -10;
     position: relative;
     color: $darkBlueColor;
 }
@@ -994,7 +995,7 @@ table thead {
 @media(min-width:769px) {
     
     .nav-justified {
-        width: 380px;
+        width: 50%;
         margin: auto;
     }
     

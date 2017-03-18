@@ -1,4 +1,4 @@
-@{meta('Domov | ' + config.name)} 
+@{meta('Areál | ' + config.name)} 
 @{head('areal.js')} 
 @{repository.active = 'areal'} 
 <div id="content-wrapper">
@@ -8,9 +8,10 @@
     
     <!--obsah-->
 
-    <!--Prepinac medzi budovou a arealom-->
+   
         <div class="col-md-12 with-margin-top">
-
+            
+             <!--Prepinac medzi budovou a arealom-->
             <div class="form-group-table padding-zero col-md-6 switch-field">             
                 <input type="radio" id="switch_left" name="switch" value="Yes"  @{model && model.areal ? (model.areal.budova ? 'checked':'') : 'checked'} />
                 <label for="switch_left">Budova</label>
@@ -215,7 +216,7 @@
                     <div class="additional-infos">* povinný parameter</div>
                 </div>
                 <div class="modal-footer">
-                    <div hidden id="confirm-delete-floor" class="confirm-delete-item">Naozaj chcete odstrániť vrchol?</br>
+                    <div hidden id="confirm-delete-floor" class="confirm-delete-item">Naozaj chcete odstrániť areál?</br>
                     </div>
                     <button id="delete-floor" type="button" class="btn btn-delete" >Odstrániť</button>
                     <button id="submit-floor" type="button" class="btn btn-submit">Uložiť</button>

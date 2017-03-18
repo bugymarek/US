@@ -2,6 +2,7 @@
 <div id="content-wrapper">
     @{if model && Array.isArray(model.areals) && model.areals.length > 0}   
     @{if model.areals.map(function(e) { return e.nazov; }).indexOf('Univerzita')>=0}
+    
     <!--Vyber mapy-->
     <div class="col-md-12 text-left with-margin-top" >
         <div class="dropdown ">

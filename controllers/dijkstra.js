@@ -1,67 +1,41 @@
 var Graph = require('node-dijkstra');
 var Graf = GETSCHEMA('Graf');
+var Areal = GETSCHEMA('Areal');
+
 exports.install = function () {
-    F.route('/graf', returnGraf, ['json', 'post']);
+    F.route('/path', returnPath, ['json', 'post']);
 };
 
-
-function returnPath(graf, from, to) {
-    var objGraf = {};
-    graf.forEach(function (element) {
-        var vrcholy = {};
-        element.vrcholyDo.forEach(function (vrchol) {
-            vrcholy[vrchol.vrchol] = vrchol.cena;
-        });
-        objGraf[element.vrchol] = vrcholy;
-    });
-    var createdGraf = new Graph(objGraf);
-    var path = createdGraf.shortestPath(from, to);
-    if(path == null) return null;
-
-    // vytvorenie pola typu objek pre jednotlive vrcholy.   
-    var expandPath = [];
-    path.forEach(function (element) {
-        var vrchol = {
-            vrchol: element,
-            areal: graf.find(x => x.vrchol === element).areal,
-            poschodie: graf.find(x => x.vrchol === element).poschodie,
-            suradnicaX: graf.find(x => x.vrchol === element).suradnicaX,
-            suradnicaY: graf.find(x => x.vrchol === element).suradnicaY,
-            typ: graf.find(x => x.vrchol === element).typ,
-        };
-        expandPath.push(vrchol);
-    });
-    return expandPath;
-}
-
 /**
- * GET - Nacitanie grafu
+ * GET - Metoda vracia najkratsiu najdenu cestu
  */
-function returnGraf() {
+function returnPath() {
     var self = this;
-    var from = self.body.from;
-    var to = self.body.to;
     var context = {
+        from: self.body.from,
+        to: self.body.to,
         async: new Utils.Async(),
         error: new ErrorBuilder(),
-        results: {}
+        results: {},
+        expandPath: []
     };
-    context.async.await(loadGraf.bind(context));
+    context.async.await(loadGrafandAplyDijksra.bind(context));
     context.async.run(function () {
         if (context.error.hasError()) {
             return self.throw500(context.error);
         }
-        var path = returnPath(context.results.graf, from, to);
-        return self.json(path);
+        return self.json(context.expandPath);
     });
 }
 
-// nacitanie grafu
-function loadGraf(next) {
+/**
+ * GET -Nacitanie grafu a pomocou dijkstrovho algoritmu najdenie najkratsiej cesty
+ */
+function loadGrafandAplyDijksra(next) {
     var self = this;
     Graf.query({
         sort: {
-            vrchol: 1
+            nazov: 1
         }
     }, function (err, graf) {
         if (err) {
@@ -69,7 +43,72 @@ function loadGraf(next) {
             self.async.cancel();
             return next();
         }
-        self.results.graf = graf;
-        return next();
+
+        var objGraf = {};
+        graf.forEach(function (element) {
+            var vrcholy = {};
+            element.vrcholyDo.forEach(function (vrchol) {
+                vrcholy[vrchol.nazov] = vrchol.cena;
+            });
+            objGraf[element.nazov] = vrcholy;
+        });
+        var createdGraf = new Graph(objGraf);
+        self.results.path = createdGraf.shortestPath(self.from, self.to);
+
+        var context = {
+            async: new Utils.Async(),
+            error: new ErrorBuilder(),
+            path: self.results.path,
+            graf: graf,
+            results: []
+        };
+        context.async.await(getPropertyOfArealForNode.bind(context));
+        context.async.run(function () {
+            if (context.error.hasError()) {
+                return self.throw500(context.error);
+            }
+            self.expandPath = context.results;
+            return next();
+        });
+    });
+}
+
+
+/**
+ *  GET - vrati vlastnosti vrcholu arealu
+ * @param {String} id ID arealu.
+ * @param {String} name nazov vrcholu.
+ */
+function getPropertyOfArealForNode(next) {
+    self = this;
+    self.path.forEach(function (element) {
+        Areal.get({
+            nazov: self.graf.find(x => x.nazov === element).areal
+        }, function (err, model) {
+            if (err) {
+                return self.throw500(err);
+            }
+            if (!model || !model.nazov || !Array.isArray(model.vrcholy) || model.vrcholy.length === 0) {
+                return self.throw404(new ErrorBuilder().push('errorAreal-unableToGet'));
+            }
+
+            delete model._id
+            delete model.budova;
+
+            model.areal = model.nazov;
+            model.poschodie = model.vrcholy.find(x => x.nazov === element).poschodie;
+            model.nazov = model.vrcholy.find(x => x.nazov === element).nazov;
+            model.suradnicaX = model.vrcholy.find(x => x.nazov === element).suradnicaX;
+            model.suradnicaY = model.vrcholy.find(x => x.nazov === element).suradnicaY;
+            model.typ = model.vrcholy.find(x => x.nazov === element).typ;
+            delete model.vrcholy;
+            self.results.push(model);
+
+            // ak je to posledny prvok pola, potom vyskoc z metody getPropertyOfArealForNode()
+            if (self.path.length - 1 === self.path.lastIndexOf(element)) {
+                return next();
+            }
+            return
+        });
     });
 }

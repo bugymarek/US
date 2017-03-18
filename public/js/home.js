@@ -152,7 +152,7 @@ function pathSearch() {
         from: $('#roomFrom-search-name').val(),
         to: $('#roomTo-search-name').val()
     };
-    var url = '/graf';
+    var url = '/path';
     $.ajax({
         method: 'post',
         url: url,
@@ -220,7 +220,7 @@ function createTableOfShortestPath(path) {
         $('#table-pathSearcher').empty();
         $('#shortestPath-name').empty();
         //popis najrkatsiej cesty + generovanie hlavicky a tela tabulky
-        $('#shortestPath-name').append("Najkratšia cesta z " + path[0].vrchol + " do " + path[path.length - 1].vrchol);
+        $('#shortestPath-name').append("Najkratšia cesta z " + path[0].nazov + " do " + path[path.length - 1].nazov);
         var html = '<thead></thead><tbody class="scrollbarStyle table-bordered"></tbody>';
         var row = $(html);
         $('#table-pathSearcher').append(row);
@@ -229,8 +229,8 @@ function createTableOfShortestPath(path) {
         $('#table-pathSearcher thead').append(row);
         for (var i = 1; i < path.length; i++) {
             row = $('<tr></tr>');
-            var nodeFrom = $('<td class="text-center 6 col-xs-6" data-item="' + path[i - 1] + '">' + path[i - 1].vrchol + '</td>');
-            var nodeTo = $('<td class="text-center 6 col-xs-6" data-item="' + path[i] + '">' + path[i].vrchol + '</td>');
+            var nodeFrom = $('<td class="text-center 6 col-xs-6" data-item="' + path[i - 1] + '">' + path[i - 1].nazov + '</td>');
+            var nodeTo = $('<td class="text-center 6 col-xs-6" data-item="' + path[i] + '">' + path[i].nazov + '</td>');
             nodeFrom.data('item', path[i - 1]);
             nodeTo.data('item', path[i]);
             row.append(nodeFrom);
