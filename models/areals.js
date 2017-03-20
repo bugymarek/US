@@ -19,14 +19,17 @@ Areal.setValidate(onValidate);
 
 Vrchol.define('nazov', String, true);
 Vrchol.define('typ', String, true);
+Vrchol.define('poschodie', Number, true);
+Vrchol.define('suradnicaX', Number, true);
+Vrchol.define('suradnicaY', Number, true);
 
-Vrchol.constant('allowed', ['nazov', 'typ']);
+Vrchol.constant('allowed', ['nazov', 'typ', 'poschodie', 'suradnicaX', 'suradnicaY']);
 Vrchol.setPrefix('errorEdges-');
 
 Vrchol.setPrepare(onPrepare);
 Vrchol.setValidate(onValidate);
 
-Poschodie.define('cislo', String, true);
+Poschodie.define('cislo', Number, true);
 Poschodie.define('url', String, true);
 
 Poschodie.constant('allowed', ['cislo', 'url']);
@@ -40,8 +43,12 @@ function onPrepare(name, value) {
         case 'nazov':
         case 'typ':
         case 'url':
-        case 'cislo':
             return value || null;
+        case 'cislo':
+        case 'poschodie':
+        case 'suradnicaX':
+        case 'suradnicaY':
+             return value || value === 0 ? value : null;   
         case 'budova':
             return value || value == false ? value : null
         case 'vrcholy':
@@ -57,7 +64,10 @@ function onValidate(name, value, schema, model) {
         case 'typ':
             return !U.isEmpty(value);
         case 'cislo':
-            return !isNaN(value);
+        case 'poschodie':
+        case 'suradnicaX':
+        case 'suradnicaY':
+            return value !== null && !isNaN(value);
         case 'url':
             return model.budova ? true : !U.isEmpty(value);
         case 'budova':

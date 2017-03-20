@@ -1,17 +1,23 @@
-var slideIndex = 1;
+var isLoading = false;
+
 $(document).ready(function () {
 
     // nastavenie mapy
     $('.map').on('click', onDropdownMapClick);
+
     // podla slaceneho tlacidla sa zmeni obrazok
     $('#buttons').on('click', '.btn-normal', currentDiv);
+
     // nacitanie tabulky miestnosti pre budovu Z
     $('.roomFrom').on('click', onDropdownBuildingItemClick('#nameOfBuildingFrom', 'roomFrom'));
+
     // nacitanie tabulky miestnosti pre budovu do
     $('.roomTo').on('click', onDropdownBuildingItemClick('#nameOfBuildingTo', 'roomTo'));
+
     // vyhladavanie v tabulkach
     $('#roomFrom-search-name').keyup(search('#roomFrom-search-name', '#table-roomFrom'));
     $('#roomTo-search-name').keyup(search('#roomTo-search-name', '#table-roomTo'));
+
     // nastavenie nazvu miestnoti po kliknuti
     $('#table-roomFrom').on('click', 'tbody tr', onRoomItemOfTable('#roomFrom'));
     $('#table-roomTo').on('click', 'tbody tr', onRoomItemOfTable('#roomTo'));
@@ -22,19 +28,6 @@ $(document).ready(function () {
     // akcia po kliknuti na vrchol v tabulke najkratsej cety
     $('#table-pathSearcher').on('click', 'tbody tr td', onNodeItemOfTable);
 
-    $('.mySlides').bind('click', function (e) {
-        var offset_t = $(this).offset().top - $(window).scrollTop();
-        var offset_l = $(this).offset().left - $(window).scrollLeft();
-
-        var x = Math.round((e.clientX - offset_l));
-        var y = Math.round((e.clientY - offset_t));
-
-        $(".display").text('x: ' + x + ' , y: ' + y);
-
-    });
-
-
-
 });
 
 function onNodeItemOfTable() {
@@ -42,6 +35,8 @@ function onNodeItemOfTable() {
     setMapAndFloor(node.areal, node.poschodie);
     var x = node.suradnicaX;
     var y = node.suradnicaY;
+    var pinWidth = 24;
+    var pinHeight = 42;
 
     // musim pockat, az potom mozem skrolovat a nastavit bod
     setTimeout(function () {
@@ -53,32 +48,36 @@ function onNodeItemOfTable() {
         $(".imgScroll").scrollLeft(x - widthtMapWindows / 2);
 
         // posunutie a zobrazenie bodu na spravnom mieste
-        $("#mapPoint").css({ left: (x - 12) + "px", top: (y - 14) + "px" });
+        $("#mapPoint").css({ left: (x) + "px", top: (y + pinHeight/2) + "px" });
         $("#mapPoint").css('z-index', 3000);
     }, 60);
-
-
 }
 
 // nastavenie konkretnej mapy po kliknuti v drop down menu
 function onDropdownMapClick() {
     map = $(this).data().item;
-    setMap(map, 1)
+    setMap(map, true, 1)
 }
 
 // nastavenie obrayku podla stlaceneho tlacidla
 function currentDiv() {
     var position = $(this).data().item;
-    showDivs(slideIndex = position);
+    showMap(position, true);
 }
 
 // zobrazi obrazok
-function showDivs(n) {
+function showMap(n, byIndex) {
     $("#mapPoint").css('z-index', -10);
     var i;
     var x = $(".mySlides");
     for (i = 0; i < x.length; i++) {
         x[i].style.display = "none";
+    }
+    var button = $("#buttons .btn-normal-active");
+    button.removeClass('btn-normal-active');
+    $('#' + n).addClass('btn-normal-active');
+    if (!byIndex) {          
+        n = $('#' + n).data().item;
     }
     x[n - 1].style.display = "block";
 }
@@ -148,6 +147,11 @@ function pathSearch() {
     if (!checkInputPathSearcher()) {
         return;
     }
+    if (isLoading) {
+		return;
+	}
+	isLoading = true;
+    $('#submitPathSearch').html('<span class="fa fa-spinner fa-spin"></span> Hľadám');
     var data = {
         from: $('#roomFrom-search-name').val(),
         to: $('#roomTo-search-name').val()
@@ -172,7 +176,10 @@ function pathSearch() {
             }
         }
         showErrorMessage('Nepodarilo sa najsť cestu');
-    });
+    }).always(function () {
+		$('#submitPathSearch').html('Vyhľadaj cestu');
+		isLoading = false;
+	});;
 }
 
 /**
@@ -248,10 +255,10 @@ function createTableOfShortestPath(path) {
  * Nastavenie mapy podla 
  * param object - objekt mapy obsahujuci data
  * @param {object} object objekt mapy obsahujuci data
+ * @param {boolean} byIndex parameter rozhoduje o sposebe zobrazenia mapy
  */
-function setMap(object, floor) {
+function setMap(object, byIndex, floor) {
     var map = object;
-
     // zmen nazov mapy
     $('#map-name').text(map.nazov);
 
@@ -263,13 +270,12 @@ function setMap(object, floor) {
     if (map.poschodia && Array.isArray(map.poschodia) && map.poschodia.length > 0) {
         var i = 1;
         map.poschodia.forEach(function (element) {
-            var html = '<button class="btn btn-normal" data-item=' + i + '>' + element.cislo + ' </button>';
+            var html = '<button id="' + (byIndex ? i : element.cislo) + '" class="btn btn-normal margin" data-item=' + i + '>' + element.cislo + ' </button>';
             var row = $(html);
             row.data('item', i);
             $('#buttons').append(row);
             i++;
         });
-
         // pridanie obrazkov map pre poschodia 
         map.poschodia.forEach(function (element) {
             var html = '<img class="mySlides" src="' + element.url + '">';
@@ -281,8 +287,9 @@ function setMap(object, floor) {
         var row = $(html);
         $('.imgScroll').append(row);
     }
+    
     // nastavenie prveho obrazku 
-    showDivs(floor);
+    showMap(floor, byIndex);
 }
 
 /** 
@@ -296,7 +303,7 @@ function setMapAndFloor(name, floor) {
         method: 'get',
         url: url
     }).done(function (res) {
-        setMap(res, floor)
+        setMap(res, false, floor)
     }).fail(function (res) {
         var message = '';
         if (res && res.responseJSON && Array.isArray(res.responseJSON.errors)) {

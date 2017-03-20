@@ -118,6 +118,10 @@ body {
     height: 100%;
 }
 
+.hide{
+    display: none;
+}
+
 .hide-on-desktop {
     display: none;
 }
@@ -235,6 +239,11 @@ body {
     
 }
 
+#node-modal{
+    padding-left: 17px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
 .modal .btn-delete {
     display: none;
@@ -251,7 +260,6 @@ body {
  #festival-location-picker-wrapper {
     position: relative;
 }
-
 
 .modal .btn-delete {
     float: left;
@@ -280,6 +288,11 @@ body {
     min-width: 45px;
 }
 
+.btn-normal.margin {
+    margin-top: 2px;
+    margin-left: 4px;
+    margin-bottom: 2px;
+}
 
 .btn-normal:hover,
 .btn-normal:focus {
@@ -287,6 +300,29 @@ body {
     border-color: $darkBlueColor;
     color: $darkBlueColor;
 }
+
+.btn-normal-active {
+    background-color: #fff;
+    border-color: $darkBlueColor;
+    color: $darkBlueColor;
+    border-top: 2px solid $darkBlueColor;
+    border-bottom: 2px solid $darkBlueColor;
+    border-right: 2px solid $darkBlueColor;
+    border-left: 2px solid $darkBlueColor;
+}
+
+.btn-normal.margin:hover,
+.btn-normal.margin:focus {
+    background-color: #fff;
+    border-color: $darkBlueColor;
+    color: $darkBlueColor;
+    border-top: 2px solid $darkBlueColor;
+    border-bottom: 2px solid $darkBlueColor;
+    border-right: 2px solid $darkBlueColor;
+    border-left: 2px solid $darkBlueColor;
+    padding-bottom:
+}
+
 
 .btn-delete {
     background-color: #fff;
@@ -852,11 +888,23 @@ table thead {
     color: $darkBlueColor;
 }
 
+#mapPin{
+    cursor: pointer;
+    z-index: 30;
+    position: relative;
+    color: $darkBlueColor;
+}
+
 .mySlides{
     cursor: move;
     bottom: 29px;
     position: relative;
 }
+
+#node-maps .mySlides{
+    cursor: default;
+}
+
 /*
  *  scrollbar styl
  */
@@ -967,10 +1015,13 @@ table thead {
     background-color: $lightBackgroundColor;
 }
 
+.modal-width {
+        width: auto !important;
+    }
 /* Responzivny dizajn */
 
 @media(max-width:991px) {
-    
+
     .half-padding-right {
         padding-right: 15px;
     }
@@ -985,7 +1036,7 @@ table thead {
 @media(min-width:991px) {
     
     /* Modalne okno */
-    
+
     #item-modal > .modal-dialog {
         width: 800px!important;
     }

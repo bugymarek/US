@@ -1,3 +1,4 @@
+
 var Graph = require('node-dijkstra');
 var Graf = GETSCHEMA('Graf');
 var Areal = GETSCHEMA('Areal');
@@ -9,7 +10,7 @@ exports.install = function () {
 /**
  * GET - Metoda vracia najkratsiu najdenu cestu
  */
-function returnPath() {
+function returnPath() {   
     var self = this;
     var context = {
         from: self.body.from,
@@ -51,10 +52,9 @@ function loadGrafandAplyDijksra(next) {
                 vrcholy[vrchol.nazov] = vrchol.cena;
             });
             objGraf[element.nazov] = vrcholy;
-        });
+        });     
         var createdGraf = new Graph(objGraf);
-        self.results.path = createdGraf.shortestPath(self.from, self.to);
-
+        self.results.path = createdGraf.path(self.from, self.to);
         var context = {
             async: new Utils.Async(),
             error: new ErrorBuilder(),
@@ -81,6 +81,9 @@ function loadGrafandAplyDijksra(next) {
  */
 function getPropertyOfArealForNode(next) {
     self = this;
+    if (self.path === null) {
+        return next();
+    }
     self.path.forEach(function (element) {
         Areal.get({
             nazov: self.graf.find(x => x.nazov === element).areal

@@ -6,6 +6,9 @@ $(document).ready(function () {
     // nastavenie obsahu po nacitani stranky
     setContent();
 
+    // podla slaceneho tlacidla sa zmeni obrazok
+    $('#buttons').on('click', '.btn-normal', currentMap);
+
     // nastavenie obsahu po cliknuti na prepinac
     $('input[name=switch]', '.switch-field').on('click', setContent);
 
@@ -24,15 +27,17 @@ $(document).ready(function () {
     // Skrytie modalneho okna pre detail vrcholu  - restart hodnot
     $('#node-modal').on('hidden.bs.modal', onHideModalNode);
 
+    // Po kliknuti na pridanie vrcholu nastavenie grafickej oblasi v detaile
+    $('#node-new').on('click', onNewNodeClick);
+
     // Zobrazenie detailu existujuceho vrcholu
     $('#table-nodes tbody').on('click', '.node-detail', onTableNodeClick);
 
     //Vytvorenie noveho vrcholu alebo aktualizacia existujuceho
-    $('#submit-node').bind('click', onSubmitNodeClick);
+    $('#submit-node').on('click', onSubmitNodeClick);
 
     // Odstranenie  vrcholu z tabulky
-    $('#delete-node').bind('click', onDeleteNodeClik);
-
+    $('#delete-node').on('click', onDeleteNodeClik);
 
     // Skrytie modalneho okna pre detail poschodia  - restart hodnot
     $('#floor-modal').on('hidden.bs.modal', onHideModalFloor);
@@ -41,11 +46,10 @@ $(document).ready(function () {
     $('#table-floors tbody').on('click', '.floor-detail', onTableFloorClick);
 
     //Vytvorenie noveho poschodia alebo aktualizacia existujuceho
-    $('#submit-floor').bind('click', onSubmitFloorClick);
+    $('#submit-floor').on('click', onSubmitFloorClick);
 
     // Odstranenie  poschodia z tabulky
-    $('#delete-floor').bind('click', onDeleteFloorClik);
-
+    $('#delete-floor').on('click', onDeleteFloorClik);
 });
 
 /**
@@ -102,40 +106,40 @@ function onCancelClick() {
 
 // odstranenie clena kapely
 
-function onArealDeleteClik() {   
-	if (!$('#confirm-delete-areal').is(':visible')) {
-		$('#submit-areal').prop('disabled', true);
-		$('#confirm-delete-areal').show();
-		return;
-	}
-	if (isLoading) {
-		return;
-	}
-	isLoading = true;
-	$('#error').html('');
-	$('#delete-areal').html('<span class="fa fa-spinner fa-spin""></span> Odstraňujem');
-	var id = $('#areal-id').val();
-	var url = '/areals/' + id;
-	$.ajax({
-		method: 'DELETE',
-		url: url,
-		dataType: 'json'
-	}).done(function () {
-		location.href = '/areals/';
-	}).fail(function (res) {
+function onArealDeleteClik() {
+    if (!$('#confirm-delete-areal').is(':visible')) {
+        $('#submit-areal').prop('disabled', true);
+        $('#confirm-delete-areal').show();
+        return;
+    }
+    if (isLoading) {
+        return;
+    }
+    isLoading = true;
+    $('#error').html('');
+    $('#delete-areal').html('<span class="fa fa-spinner fa-spin""></span> Odstraňujem');
+    var id = $('#areal-id').val();
+    var url = '/areals/' + id;
+    $.ajax({
+        method: 'DELETE',
+        url: url,
+        dataType: 'json'
+    }).done(function () {
+        location.href = '/areals/';
+    }).fail(function (res) {
         var message = '';
-		if (res && res.responseJSON && Array.isArray(res.responseJSON.errors)) {
-			if (res.responseJSON.errors.length > 0) {
-				res.responseJSON.errors.forEach(function (e) {
-					message += e.error + '<br/>';
-				});
-			}
-		}
-		showErrorMessage(message || ' Nepodarilo sa odstrániť kapelu');
-	}).always(function () {
-		$('#delete-areal').html('Odstrániť');
-		isLoading = false;
-	});
+        if (res && res.responseJSON && Array.isArray(res.responseJSON.errors)) {
+            if (res.responseJSON.errors.length > 0) {
+                res.responseJSON.errors.forEach(function (e) {
+                    message += e.error + '<br/>';
+                });
+            }
+        }
+        showErrorMessage(message || ' Nepodarilo sa odstrániť kapelu');
+    }).always(function () {
+        $('#delete-areal').html('Odstrániť');
+        isLoading = false;
+    });
 }
 
 /**
@@ -163,8 +167,11 @@ function setContent() {
  */
 function onHideModalNode() {
     // Schovam chybove hlasenia
+    $('#node-error').html('');
     $('#node-name').closest('.form-group').removeClass('has-error');
     $('#type-combobox').closest('.form-group').removeClass('has-error');
+    $('#node-yPosition').closest('.form-group').removeClass('has-error');
+    $('#node-xPosition').closest('.form-group').removeClass('has-error');
 
     // Zakladne
     $('#confirm-delete-node').hide();
@@ -172,6 +179,12 @@ function onHideModalNode() {
     $('#submit-node').prop('disabled', false);
     $('#node-id').val('');
     $('.modal-node-title').html('Nový&nbsp;používateľ');
+
+    // X-ova suradnica
+    $('#node-xPosition').val('');
+
+    // Y-ova suradnica
+    $('#node-yPosition').val('');
 
     // Nazov vrcholu
     $('#node-name').val('');
@@ -181,10 +194,26 @@ function onHideModalNode() {
 }
 
 /**
+ * Nastavenie oblasti grafickeho zobrazenia bodu na mape pre novy vrchol.  
+ */
+function onNewNodeClick() {
+    var poschodia = $('input[name=switch]:checked', '.switch-field').val() === "Yes"
+        ? $('#table-floors tbody tr').map(function () {
+            return $(this).data().item
+        }).get()
+        : null;
+    var url = $('input[name=switch]:checked', '.switch-field').val() === "Yes" ? null : $('#map-image').val();
+    showMapsOfFloors(poschodia, url, 1, true);
+    setMapPinPosition();
+}
+
+/**
  * Nastavenie hodnot pre existujuci vrchol.  
  */
 function onTableNodeClick() {
+
     var node = $(this).data().item;
+    console.log(node);
     var index = $(this).index();
     // Zakladne
     $('#delete-node').show();
@@ -196,6 +225,24 @@ function onTableNodeClick() {
 
     // Typ vrcholu 
     $("#type-combobox").val(node.typ || "Placeholder").change();
+
+    // Nastavenie pozicie bodu
+    $('#node-xPosition').val(node.suradnicaX);
+    $('#node-yPosition').val(node.suradnicaY);
+
+    // Oblast pre graficke pridanie vrcholu
+    var poschodia = $('input[name=switch]:checked', '.switch-field').val() === "Yes"
+        ? $('#table-floors tbody tr').map(function () {
+            return $(this).data().item
+        }).get()
+        : null;
+    //console.log(poschodia);
+    var url = $('input[name=switch]:checked', '.switch-field').val() === "Yes" ? null : $('#map-image').val();
+    showMapsOfFloors(poschodia, url, node.poschodie, false);
+
+    $('#node-modal').on('show.bs.modal', setMapPinPosition(node.suradnicaX, node.suradnicaY));
+
+
 }
 
 /**
@@ -204,6 +251,9 @@ function onTableNodeClick() {
 function onSubmitNodeClick() {
     $('#node-name').closest('.form-group').removeClass('has-error');
     $('#type-combobox').closest('.form-group').removeClass('has-error');
+    $('#node-xPosition').closest('.form-group').removeClass('has-error');
+    $('#node-yPosition').closest('.form-group').removeClass('has-error');
+    $('#node-error').html('');
     var index = $('#node-id').val();
     if (index) {
         updateNode(index);
@@ -219,12 +269,15 @@ function onSubmitNodeClick() {
 function addNode() {
     var node = {
         nazov: $('#node-name').val(),
-        typ: $("#type-combobox").val()
+        typ: $("#type-combobox").val(),
+        suradnicaX: $("#node-xPosition").val(),
+        suradnicaY: $("#node-yPosition").val(),
+        poschodie: $("#buttons .btn-normal-active").html()
     };
     var name = node.nazov.trim();
-    var typ = node.typ;
-    if (name && typ) {
+    if (name && node.typ && node.suradnicaX && node.suradnicaY && node.poschodie) {
         if (checkItemExistInTable('#table-nodes', node)) {
+            $('#node-name').closest('.form-group').addClass('has-error');
             showErrorMessage('Zadaný vrchol už existuje.');
             return;
         }
@@ -235,6 +288,9 @@ function addNode() {
             $('#nodes-empty').hide();
         }
 
+        node.suradnicaX = isInt(node.suradnicaX);
+        node.suradnicaY = isInt(node.suradnicaY);
+        node.nazov = name;
         var html = '<tr class="node-detail"  data-toggle="modal" data-target="#node-modal">' +
             '<td class="text-center">' + node.nazov + '</td>' +
             '<td class="text-center">' + node.typ + '</td>' +
@@ -243,16 +299,35 @@ function addNode() {
         row.data('item', node);
         $('#table-nodes tbody').append(row);
         $('#node-modal').modal('toggle');
-    } else if (name == '' && !typ) {
-        showErrorMessage('Zadajte názov a typ vrcholu.');
-        $('#node-name').closest('.form-group').addClass('has-error');
-        $('#type-combobox').closest('.form-group').addClass('has-error');
-    } else if (name == '') {
-        showErrorMessage('Zadajte názov vrcholu');
-        $('#node-name').closest('.form-group').addClass('has-error');
     } else {
-        showErrorMessage('Vyberte typ vrcholu.');
-        $('#type-combobox').closest('.form-group').addClass('has-error');
+        var html = '<div class="alert alert-danger" role="alert">';
+        if (!node.typ) {
+            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
+            html += '<span class="sr-only">Chyba:</span>Zadajte typ vrcholu.<br />';
+            $('#type-combobox').closest('.form-group').addClass('has-error');
+        }
+        if (name == '') {
+            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
+            html += '<span class="sr-only">Chyba:</span>Zadajte názov vrcholu.<br />';
+            $('#node-name').closest('.form-group').addClass('has-error');
+        }
+        if (node.suradnicaX == '') {
+            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
+            html += '<span class="sr-only">Chyba:</span>Vyberte X-ovu súradnicu.<br />';
+            $('#node-xPosition').closest('.form-group').addClass('has-error');
+        }
+        if (node.suradnicaY == '') {
+            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
+            html += '<span class="sr-only">Chyba:</span>Vyberte Y-ovu súradnicu.<br />';
+            $('#node-yPosition').closest('.form-group').addClass('has-error');
+        }
+        if (node.poschodie == '') {
+            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
+            html += '<span class="sr-only">Chyba:</span>Vyberte poschodie.<br />';
+        }
+
+        html += '</div>';
+        $('#node-error').html(html);
     }
 
     //scroll and of table
@@ -268,30 +343,55 @@ function addNode() {
 function updateNode(index) {
     var node = {
         nazov: $('#node-name').val(),
-        typ: $("#type-combobox").val()
+        typ: $("#type-combobox").val(),
+        suradnicaX: $("#node-xPosition").val(),
+        suradnicaY: $("#node-yPosition").val(),
+        poschodie: $("#buttons .btn-normal-active").html()
     };
     var name = node.nazov.trim();
-    var typ = node.typ;
-    if (name && typ) {
+    if (name && node.typ && node.suradnicaX && node.suradnicaY && node.poschodie) {
         if (checkUpdateItemInTable('#table-nodes', node, index)) {
+            $('#node-name').closest('.form-group').addClass('has-error');
             showErrorMessage('Zadaný vrchol už existuje.');
             return;
         }
+        node.suradnicaX = isInt(node.suradnicaX);
+        node.suradnicaY = isInt(node.suradnicaY);
+        node.nazov = name;
         var html = '<td class="text-center">' + node.nazov + '</td>' +
             '<td class="text-center">' + node.typ + '</td>';
         var row = $('#table-nodes tbody tr').eq(index).html(html);
         row.data('item', node);
         $('#node-modal').modal('toggle');
-    } else if (name == '' && !typ) {
-        showErrorMessage('Zadajte názov a typ vrcholu.');
-        $('#node-name').closest('.form-group').addClass('has-error');
-        $('#type-combobox').closest('.form-group').addClass('has-error');
-    } else if (name == '') {
-        showErrorMessage('Zadajte názov vrcholu');
-        $('#node-name').closest('.form-group').addClass('has-error');
     } else {
-        showErrorMessage('Vyberte typ vrcholu.');
-        $('#type-combobox').closest('.form-group').addClass('has-error');
+        var html = '<div class="alert alert-danger" role="alert">';
+        if (!node.typ) {
+            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
+            html += '<span class="sr-only">Chyba:</span>Zadajte typ vrcholu.<br />';
+            $('#type-combobox').closest('.form-group').addClass('has-error');
+        }
+        if (name == '') {
+            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
+            html += '<span class="sr-only">Chyba:</span>Zadajte názov vrcholu.<br />';
+            $('#node-name').closest('.form-group').addClass('has-error');
+        }
+        if (node.suradnicaX == '') {
+            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
+            html += '<span class="sr-only">Chyba:</span>Vyberte X-ovu súradnicu.<br />';
+            $('#node-xPosition').closest('.form-group').addClass('has-error');
+        }
+        if (node.suradnicaY == '') {
+            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
+            html += '<span class="sr-only">Chyba:</span>Vyberte Y-ovu súradnicu.<br />';
+            $('#node-yPosition').closest('.form-group').addClass('has-error');
+        }
+        if (node.poschodie == '') {
+            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
+            html += '<span class="sr-only">Chyba:</span>Vyberte poschodie.<br />';
+        }
+
+        html += '</div>';
+        $('#node-error').html(html);
     }
 }
 
@@ -314,6 +414,130 @@ function onDeleteNodeClik() {
         $('#nodes-empty').show();
     }
     $('#node-modal').modal('toggle');
+}
+
+
+/**
+ * Nastavenie mapy pre poschodie podla  param poschodia
+ * @param {object} poschodia parameter obsahujuci poschodia arealu.
+ */
+function showMapsOfFloors(poschodia, url, floor, byIndex) {
+
+    // pridanie tlacidiel pre poschodia
+    $('#node-maps').addClass("imgScroll");
+    $('#node-maps').removeClass("info-message");
+    $('#node-maps').removeClass("text-center");
+    $('#buttons').empty();
+    $('.imgScroll').empty();
+    if (poschodia && Array.isArray(poschodia) && poschodia.length > 0) {
+        var mapPin = $('<i id="mapPin" class="fa fa-map-marker faa-pulse animated fa-3x "></i>');
+        $('.imgScroll').append(mapPin);
+        var i = 1;
+
+        poschodia.forEach(function (element) {
+            var html = '<button id="' + (byIndex ? i : element.cislo) + '" class="btn btn-normal margin" data-item=' + i + '>' + element.cislo + ' </button>';
+            var row = $(html);
+            row.data('item', i);
+            $('#buttons').append(row);
+            i++;
+        });
+
+        // pridanie obrazkov map pre poschodia 
+        poschodia.forEach(function (element) {
+            var html = '<img class="mySlides" src="' + element.url + '">';
+            var row = $(html);
+            $('.imgScroll').append(row);
+        });
+    } else if (url) {
+        var mapPin = $('<i id="mapPin" class="fa fa-map-marker faa-pulse animated fa-3x "></i>');
+        $('.imgScroll').append(mapPin);
+        var html = '<img class="mySlides" src="' + url + '">';
+        var row = $(html);
+        $('.imgScroll').append(row);
+        byIndex = true;
+        floor = 1;
+    } else {
+        var message = $('<span>Muíte pridať mapu pre areál</span>');
+        $('#node-maps').removeClass("imgScroll");
+        $('#node-maps').addClass("info-message text-center");
+        $('#node-maps').append(message);
+        return
+    }
+    // nastavenie prveho obrazku 
+    showMap(floor, byIndex);
+}
+
+
+/**
+ *  Nastavenie obrayku podla stlaceneho tlacidla
+ */
+function currentMap() {
+    // vymazem poziciu pinu
+    $('#node-xPosition').val('');
+    $('#node-yPosition').val('');
+
+    var position = $(this).data().item;
+    showMap(position, true);
+}
+
+/**
+ *  Zobrazi obrazok
+ */
+function showMap(n, byIndex) {
+    var x = $(".mySlides");
+    for (var i = 0; i < x.length; i++) {
+        $(x[i]).removeClass("active");
+        x[i].style.display = "none";
+    }
+
+    var button = $("#buttons .btn-normal-active");
+    button.removeClass('btn-normal-active');
+    if (!byIndex) {
+        $('#' + n).addClass('btn-normal-active');
+        n = $('#' + n).data().item;
+    } else {
+        var buttons = $("#buttons").children();
+        $(buttons[n - 1]).addClass('btn-normal-active');
+    }
+    $(x[n - 1]).addClass("active");
+    x[n - 1].style.display = "block";
+}
+
+function setMapPinPosition(x, y) {
+    var mapPinHeigth = 42;
+
+    if (!x || !y) {
+        x = 0;
+        y = 0;
+    }
+
+    // musim pockat, az potom mozem skrolovat a nastavit bod  
+    setTimeout(function () {
+        var bottomSliderHeight = 17;
+        var heightMapWindows = $(".imgScroll").height() - bottomSliderHeight;
+        var rightSliderWidth = 10;
+        var widthtMapWindows = $(".imgScroll").width() - rightSliderWidth;
+
+        $(".imgScroll").scrollTop(y - heightMapWindows / 2);
+        $(".imgScroll").scrollLeft(x - widthtMapWindows / 2);
+
+        // posunutie a zobrazenie bodu na spravnom mieste
+        $("#mapPin").css({ left: (x) + "px", top: (y + mapPinHeigth / 3) + "px" });
+    }, 220);
+
+    // nastavenie suradnice X a suradnice Y podla umiestnenia pinu
+    $('#mapPin').draggable(
+        {
+            drag: function () {
+                var offset = $(this).offset();
+                var yOffsetMapWindow = $(".mySlides.active").offset().top;
+                var xOffsetMapWindow = $(".mySlides.active").offset().left;
+                var xPos = Math.round(offset.left - xOffsetMapWindow);
+                var yPos = Math.round(offset.top - yOffsetMapWindow);
+                $('#node-xPosition').val(xPos);
+                $('#node-yPosition').val(yPos);
+            }
+        });
 }
 
 /**
@@ -354,11 +578,11 @@ function onTableFloorClick() {
 
     // Zakladne
     $('#delete-floor').show();
-    $('.modal-floor-title').html(floor.cislo ? 'Poschodie: ' + floor.cislo : 'Detail&nbsp;poschodia');
+    $('.modal-floor-title').html(floor.cislo !== null ? 'Poschodie: ' + floor.cislo : 'Detail&nbsp;poschodia');
     $('#floor-id').val(index);
 
     // Nazov vrcholu
-    $('#floor-number').val(floor.cislo || '');
+    $('#floor-number').val(floor.cislo !== null ? floor.cislo : '');
 
     // Nastavenie obrazku
     if (floor.url) {
@@ -482,7 +706,7 @@ function checkItemExistInTable(tableId, item) {
     }).get();
     switch (tableId) {
         case '#table-nodes':
-            return items.findIndex(e => e.nazov === item.nazov && e.typ === item.typ) >= 0;
+            return items.findIndex(e => e.nazov === item.nazov) >= 0;
         case '#table-floors':
             return items.findIndex(e => e.cislo === item.cislo) >= 0;
         default:
@@ -503,7 +727,7 @@ function checkUpdateItemInTable(tableId, item, index) {
         items.splice(index, 1);
         switch (tableId) {
             case '#table-nodes':
-                return items.findIndex(e => e.nazov === item.nazov && e.typ === item.typ) >= 0;
+                return items.findIndex(e => e.nazov === item.nazov) >= 0;
             case '#table-floors':
                 return items.findIndex(e => e.cislo === item.cislo) >= 0;
             default:
@@ -591,11 +815,6 @@ function initializeImageUpload() {
 	 */
     function onImageUploadError(wrapper, button, message) {
         var errMessage = ' Nepodarilo sa uložiť obrázok. ' + message;
-        // var error = '<div class="alert alert-danger" role="alert">';
-        // error += '<span class="fa fa-exclamation-triangle" aria-hidden="true"></span>';
-        // error += '<span class="sr-only">Chyba:</span>' + errMessage + '<br /></div>';
-        // $('#upload-image-error').html(error);
-        // $('#upload-image-error').show();
         showErrorMessage(errMessage);
         wrapper.removeClass('with-bg');
         wrapper.css('background-image', '');
@@ -665,8 +884,8 @@ function composeRequestData() {
             }).get()
             : null,
         vrcholy: $('#table-nodes tbody tr').map(function () {
-                return $(this).data().item
-            }).get()
+            return $(this).data().item
+        }).get()
     };
     return data;
 }

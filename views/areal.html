@@ -8,7 +8,8 @@
     
     <!--obsah-->
 
-   
+   <div id="drag" class="ui-widget-content">
+</div>
         <div class="col-md-12 with-margin-top">
             
              <!--Prepinac medzi budovou a arealom-->
@@ -57,7 +58,7 @@
 							    <img src="@{poschodie.url || '/uploads/placeholder.jpg'}" class="thumb">
 						    </a>
                             </td>
-                            <td class="text-center">@{poschodie.cislo.toString() || '-'}</td>
+                            <td class="text-center">@{poschodie.cislo !== null ? poschodie.cislo.toString() : '-'}</td>
                         </tr>
                     @{end}                                      
                 @{fi} 
@@ -87,7 +88,7 @@
         <!-- Vrcholy -->
         <div class="col-md-12 form-group-table">
 		    <label class="col-md-6 padding-zero" for="areal-vrcholy">Vrcholy</label>       
-                <button class=" btn btn-submit" data-toggle="modal" data-target="#node-modal">
+                <button id="node-new" class=" btn btn-submit" data-toggle="modal" data-target="#node-modal">
                     <span class="fa fa-plus" aria-hidden="true"></span>
                     <span class="hide-on-mobile">&nbsp;Pridať &nbsp;vrchol</span>
                 </button>
@@ -131,7 +132,7 @@
         </div>
         
     <div class="modal-footer col-md-12">
-        <div id="confirm-delete-areal" class="confirm-delete-item" hidden >Naozaj chcete odstrániť kapelu?</br></div>
+        <div id="confirm-delete-areal" class="confirm-delete-item" hidden >Naozaj chcete odstrániť areál?</br></div>
         @{if model && model.areal && model.areal._id}
         <button id="delete-areal" type="button" class="btn btn-delete">Odstrániť</button>
         @{fi} 
@@ -142,22 +143,48 @@
 
 <!--Modal pre vrchol-->
 <div id="node-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-width">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-node-title">Nový&nbsp;vrchol</h4>
             </div>
             <div class="modal-body">
+
+                <!--Oblast mapy-->
+                <div class="col-md-12">    
+                    <div id="buttons" class="col-md-1 text-right"></div>
+                    <div class="col-md-11 with-margin-bottom">
+                        <div id='node-maps' class="imgScroll scrollbarStyle dragscroll"></div>
+                    </div>
+                </div>
+
+                 <!-- X-ova suradnica bodu -->
+                <div class="col-md-6 with-margin-bottom">
+                    <div class="form-group">
+                        <label for="node-xPosition">X-ová súradnica bodu&nbsp;*</label>
+                        <input id="node-xPosition" class="form-control" type="text" disabled>      
+                    </div>           
+                </div>
+
+                 <!-- Y-ova suradnica bodu-->
+                <div class="col-md-6 with-margin-bottom">
+                    <div class="form-group">
+                        <label for="node-yPosition">Y-ová súradnica bodu&nbsp;*</label>
+                        <input id="node-yPosition" class="form-control" type="text" disabled>      
+                    </div>           
+                </div>
+
                 <!-- Nazov vrcholu -->
-                <div class="col-md-12 with-margin-bottom">
+                <div class="col-md-6 with-margin-bottom">
                     <div class="form-group">
                         <label for="areal-node">Názov vrcholu&nbsp;*</label>
                         <input id="node-name" class="form-control" type="text">      
                     </div>           
                 </div>
+
                 <!-- Typ vrcholu combobox -->
-                <div class="col-md-12 with-margin-bottom">
+                <div class="col-md-6 with-margin-bottom">
                     <div class="form-group">
                         <label for="node-type">Typ&nbsp;vrcholu&nbsp;*</label>
                         <select id="type-combobox" class="form-control">
@@ -171,6 +198,7 @@
                     </div>                  
                 </div>
                 <input id="node-id"  type="hidden">
+                <div id="node-error" class="col-md-12"></div>
                 <div class="additional-infos">* povinný parameter</div>
             </div>
             <div class="modal-footer">
@@ -216,7 +244,7 @@
                     <div class="additional-infos">* povinný parameter</div>
                 </div>
                 <div class="modal-footer">
-                    <div hidden id="confirm-delete-floor" class="confirm-delete-item">Naozaj chcete odstrániť areál?</br>
+                    <div hidden id="confirm-delete-floor" class="confirm-delete-item">Naozaj chcete odstrániť poschodie?</br>
                     </div>
                     <button id="delete-floor" type="button" class="btn btn-delete" >Odstrániť</button>
                     <button id="submit-floor" type="button" class="btn btn-submit">Uložiť</button>
