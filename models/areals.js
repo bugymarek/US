@@ -148,7 +148,7 @@ Areal.addOperation('count', function (error, model, options, callback) {
  * Vytvorenie noveho arealu alebo aktualizacia existujuceho arealu.
  * 
  * @param {Object} error Chyba.
- * @param {Object} model Aktualny objekt kapely.
+ * @param {Object} model Aktualny objekt arealu.
  * @param {Object} options Parametre funkcie.
  * @return {*} areal.
  */
@@ -209,7 +209,7 @@ function updateEntity(error, model, options, callback) {
 }
 
 /**
- * Aktualizacia atributov kapely.
+ * Aktualizacia atributov arealu.
  * 
  * Zo vstupnych parametrov sa vyberu len tie, ktorych aktualizacia je povolena.
  * Zoznam atributov, ktore je povolene aktualizovat sa nachadza v konstante 'allowed'.
@@ -217,7 +217,7 @@ function updateEntity(error, model, options, callback) {
  * Nasledne sa aktualizovany objekt upravy (prepare) a zvaliduje (validate).
  * 
  * @param {Object} error Chyba.
- * @param {Object} model Aktualny objekt kapely.
+ * @param {Object} model Aktualny objekt areal.
  * @param {Object} options Parametre funkcie.
  */
 Areal.addWorkflow('update', function (error, model, options, callback) {
@@ -237,7 +237,7 @@ Areal.addWorkflow('update', function (error, model, options, callback) {
  * Overenie, ci sa v databaze uz nenachadza entita s daným nazvom.
  * 
  * @param {Object} error Chyba.
- * @param {Object} model Aktualny objekt pouzivatela.
+ * @param {Object} model Aktualny objekt arealu.
  * @param {Object} options Parametre funkcie.
  * @return {*}
  */

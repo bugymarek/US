@@ -1,0 +1,312 @@
+@{meta('Vrchol grafu | ' + config.name)} 
+@{head('grafNode.js')} 
+@{repository.active = 'node'}
+@{head('dragscroll/dragscroll.js')}
+<div id="content-wrapper">
+    <div class="header text-center">
+        <h1>@{model && model.node ? (model.node.nazov || 'Detail vrcholu' ) : 'Nový vrchol'}</h1>
+    </div>
+
+    <!--obsah-->
+
+    <!--Vyber arealu -->
+    <div class="col-md-12 text-left with-margin-top">
+        <div class="col-md-6 with-margin-top with-margin-bottom">
+            <div class="dropdown ">
+                <button class="dropbtn">Vyber areál</button>
+                <div class="dropdown-content">
+                    @{if model && Array.isArray(model.areals) && model.areals.length > 0} 
+                    @{foreach areal in model.areals}
+                    <a class="areal-map" data-item="@{JSON.stringify({id: areal._id, nazov: areal.nazov, url: areal.url, poschodia: areal.poschodia})}">@{areal.nazov}</a>                    
+                    @{end} @{else}
+                    <!--Informacna sprava ak areály neexistujú-->
+                    <div id="areals-empty" class="info-message text-center col-md-12">
+                        <span>Neexistujú žiadne areály</span>
+                    </div>
+                    @{fi}
+                </div>
+            </div>
+        </div>
+
+        <!-- Nazov arealu -->
+        <div class="col-md-6 with-margin-bottom">
+            <div class="form-group">
+                <label for="graf-node-areal">Názov areálu&nbsp;*</label>
+                <input id="graf-node-areal" value="@{model && model.node ? (model.node.areal || '') : ''}" class="form-control" type="text"
+                    disabled>
+            </div>
+        </div>
+    </div>
+
+    <!--Oblast mapy-->
+    <div class="col-md-12">
+        <div id="buttons" class="col-md-1 text-right"></div>
+        <div class="col-md-11 with-margin-bottom">
+            <div id="map-window" class="scrollbarStyle dragscroll"></div>
+        </div>
+    </div>
+
+    <!--Tabulka vyberu vrcholu pre konkretny araál-->
+    <div class="text-left col-md-12 ">
+
+    <!--nazov vrcholu grafu-->
+        <div class="col-md-6 form-group">
+                <label for="node-graf-name">Názov vrchlu v grafe&nbsp;*</label>
+                <input id="node-graf-name" class=" with-margin-bottom form-control" value="@{model && model.node ? (model.node.nazov || '' ) : ''}"  type="text" disabled>
+        </div>
+
+        <i class="col-xs-1 padding-zero text-right with-margin-top fa fa-search fa-2x" aria-hidden="true"></i>
+        <div class="col-xs-5 form-group">
+            <input id="node-search-name" type="text" class="with-margin-top search form-control"  placeholder="Názov vrcholu">
+        </div>
+        <div class="text-left col-md-12">
+            <table id="table-nodes" class=" three scrollbar table-hover with-margin table-striped results">
+                <thead>
+                    <tr>
+                        <th class="head col-md-12 col-xs-12">Vrcholy areálu <span id="nameOfAreal" class="@{model && model.node ? 'nameOfBuilding' : ''}">@{model && model.node ? (model.node.areal || '') : ''}</span></th>
+                    </tr>
+                     <tr>
+                        <th class="text-center col-md-4 col-xs-4">poschodie</th>
+                        <th class="text-center col-md-4 col-xs-4">Názov</th>
+                        <th class="text-center col-md-4 col-xs-4">Typ</th>
+                    </tr>
+                    
+                </thead>
+                <tbody class="scrollbarStyle table-bordered">
+                    @{if model && model.nodes && Array.isArray(model.nodes) && model.nodes.length > 0}
+                        @{foreach node in model.nodes}
+                            <tr data-item="@{JSON.stringify(node)}">
+                                <td class="text-center col-md-4 col-xs-4">@{node.poschodie === 0 || node.poschodie ? node.poschodie : '-'}</td>
+                                <td class="text-center col-md-4 col-xs-4">@{node.nazov || '-'}</td>
+                                <td class="text-center col-md-4 col-xs-4">@{node.typ || '-'}</td>
+                            </tr>
+                        @{end}     
+                    @{else}              
+                    <tr>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                    <tr>
+                        <td class="text-center col-md-3 col-xs-3"></td>
+                        <td class="text-center col-md-3 col-xs-3"></td>
+                        <td class="text-center col-md-3 col-xs-3"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                    </tr>
+                    @{fi}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Susedné vrcholy -->
+        <div class="col-md-12 form-group-table">
+		    <label class="col-md-6" for="adjancet-node">Susedné&nbsp;vrcholy&nbsp;*</label> 
+            <div class="col-md-6">      
+                <button id="adjancet-node-new" class=" btn btn-submit" data-toggle="modal" data-target="#adjancet-node-modal">
+                    <span class="fa fa-plus" aria-hidden="true"></span>
+                    <span class="hide-on-mobile">&nbsp;Pridať &nbsp;vrchol</span>
+                </button>
+                <div class="col-md-7 float-right">
+                    <input id="adjancet-node-search-name" type="text" class="search form-control" placeholder="Názov vrcholu">
+                </div>   
+                <div class="col-md-1 text-right float-right">
+                    <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+                </div>
+            </div>                                  
+		</div>
+        
+        <div class="col-md-12">
+        <div class="col-md-12">
+            <table id="table-adjancet-nodes" class="scrollbar alone table-hover table-striped results @{(model && model.node && Array.isArray(model.node.susedneVrcholy) && model.node.susedneVrcholy.length > 0) ? '' : 'hide-on-desktop'}">
+                <thead>
+                    <tr>
+                        <th class="text-center col-md-12 col-xs-12">Názov</th>
+                    </tr>
+                </thead>
+                <tbody class="scrollbarStyle table-bordered">
+            @{if model && model.node && Array.isArray(model.node.susedneVrcholy) && model.node.susedneVrcholy.length > 0}
+                @{foreach node in model.node.susedneVrcholy}
+                    <tr class="adjancet-node-detail" data-toggle="modal" data-target="#adjancet-node-modal" data-item="@{JSON.stringify(node)}">
+                        <td class="text-center">@{node.nazov || '-'}</td>
+                    </tr>
+                @{end}                            
+            @{fi} 
+                </tbody>
+            </table>  
+            <!--Informacna sprava ak je tabulka pre vrcholy prazdna -->
+            <div id="adjancet-node-empty" class="info-message text-center col-md-12 @{(model && model.node && Array.isArray(model.node.susedneVrcholy) && model.node.susedneVrcholy.length > 0) ? 'hide-on-desktop' : ''}">
+                    <span>Pridajte vrchol</span> 
+            </div>  
+		</div>
+        </div>
+
+    <div class="text-right with-margin-top col-md-12">
+        <input id="node-id" value="@{model && model.node ? (model.node._id || '') : ''}" type="hidden">
+        <div id="error"></div>
+        <div class="additional-infos">* povinný parameter</div>
+    </div>
+
+     <input id="node-object" data-item="@{model && model.node ? JSON.stringify({poschodie: model.node.poschodie, suradnicaX: model.node.suradnicaX, suradnicaY: model.node.suradnicaY}) : ''}" type="hidden">
+    
+    <div class="modal-footer col-md-12">
+        <div id="confirm-delete-node" class="confirm-delete-item" hidden>Naozaj chcete odstrániť vrchol?</br>
+        </div>
+        @{if model && model.node && model.node._id}
+        <button id="delete-node" type="button" class="btn btn-delete">Odstrániť</button> 
+        @{fi}
+        <button id="cancel-node" type="button" class="btn btn-normal" data-dismiss="collapse">Zrušiť</button>
+        <button id="submit-node" type="button" class="btn btn-submit">Uložiť</button>
+    </div>
+</div>
+
+<!--Modal pre vrchol-->
+<div id="adjancet-node-modal" class="lg-modal modal fade" role="dialog">
+    <div class="modal-dialog modal-width">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-node-title">Nový&nbsp;vrchol</h4>
+            </div>
+            <div class="modal-body">
+
+<!--Vyber arealu -->
+    <div class="col-md-12 text-left with-margin-top">
+        <div class="col-md-6 with-margin-top with-margin-bottom">
+            <div class="dropdown ">
+                <button class="dropbtn">Vyber areál</button>
+                <div class="dropdown-content">
+                    @{if model && Array.isArray(model.areals) && model.areals.length > 0} 
+                    @{foreach areal in model.areals}
+                    <a class="adjancet-node-areal-map" data-item="@{JSON.stringify({id: areal._id, nazov: areal.nazov, url: areal.url, poschodia: areal.poschodia})}">@{areal.nazov}</a>                    
+                    @{end} @{else}
+                    <!--Informacna sprava ak areály neexistujú-->
+                    <div id="adjancet-node-areals-empty" class="info-message text-center col-md-12">
+                        <span>Neexistujú žiadne areály</span>
+                    </div>
+                    @{fi}
+                </div>
+            </div>
+        </div>
+
+        <!-- Nazov arealu -->
+        <div class="col-md-6 with-margin-bottom">
+            <div class="form-group">
+                <label for="adjancet-node-areal-name">Názov areálu&nbsp;*</label>
+                <input id="adjancet-node-areal-name" class="form-control" type="text" disabled>
+            </div>
+        </div>
+    </div>
+
+    <!--Oblast mapy-->
+    <div class="col-md-12">
+        <div id="adjancet-node-buttons" class="col-md-1 text-right"></div>
+        <div class="col-md-11 with-margin-bottom">
+            <div id="adjancet-node-map-window" class="scrollbarStyle dragscroll"></div>
+        </div>
+    </div>
+
+     <!--Tabulka vyberu susedneho vrcholu pre konkretny araál-->
+    <div class="text-left col-md-12 form-group-table">
+
+        <label class="col-md-6" for="areal-vrcholy"></label> 
+
+        <i class="col-xs-1 padding-zero text-right with-margin-bottom fa fa-search fa-2x" aria-hidden="true"></i>
+        <div class="col-xs-5 form-group">
+            <input id="adjancet-node-search-name-detail" type="text" class=" search form-control" value="@{model && model.node ? (model.node.nazov || '') : ''}" placeholder="Názov vrcholu">
+        </div>
+        <div class="text-left col-md-12">
+            <table id="table-adjancet-nodes-detail" class=" three scrollbar table-hover with-margin table-striped results">
+                <thead>
+                    <tr>
+                        <th class="head col-md-12 col-xs-12">Vrcholy areálu <span id="nameOfArealInModal" class="@{model && model.node ? 'nameOfBuilding' : ''}">@{model && model.node ? (model.node.areal || '') : ''}</span></th>
+                    </tr>
+                     <tr>
+                        <th class="text-center col-md-4 col-xs-4">poschodie</th>
+                        <th class="text-center col-md-4 col-xs-4">Názov</th>
+                        <th class="text-center col-md-4 col-xs-4">Typ</th>
+                    </tr>
+                    
+                </thead>
+                <tbody class="scrollbarStyle table-bordered">
+                    @{if model && model.nodes && Array.isArray(model.nodes) && model.nodes.length > 0}
+                        @{foreach node in model.nodes}
+                            <tr data-item="@{JSON.stringify(node)}">
+                                <td class="text-center col-md-4 col-xs-4">@{node.poschodie === 0 || node.poschodie ? node.poschodie : '-'}</td>
+                                <td class="text-center col-md-4 col-xs-4">@{node.nazov || '-'}</td>
+                                <td class="text-center col-md-4 col-xs-4">@{node.typ || '-'}</td>
+                            </tr>
+                        @{end}     
+                    @{else}              
+                    <tr>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                    <tr>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                        <td class="text-center col-md-4 col-xs-4"></td>
+                    </tr>
+                    @{fi}
+                </tbody>
+            </table>
+        </div>
+    </div>
+        <!-- Nazov susedneho vrchlu -->
+        <div class="col-md-6 with-margin-bottom">
+            <div class="form-group">
+                <label for="adjancet-node-name">Názov susedného vrcholu&nbsp;*</label>
+                <input id="adjancet-node-name" class="form-control" type="text" disabled>
+            </div>
+        </div>
+
+    <!-- Vzdialenost od aktuálneho vrcholu -->
+        <div class="col-md-6 with-margin-bottom">
+            <div class="form-group">
+                <label for="adjancet-node-price">Vzdialenosť v metroch&nbsp;*</label>
+                <input id="adjancet-node-price" class="form-control" type="text">
+            </div>
+        </div>
+
+                <input id="adjancet-node-id"  type="hidden">
+                <div id="adjancet-node-error" class="col-md-12"></div>
+                <div class="additional-infos">* povinný parameter</div>
+            </div>
+            <div class="modal-footer">
+                <div hidden id="confirm-delete-adjancet-node" class="confirm-delete-item">Naozaj chcete odstrániť vrchol?</br>
+                </div>
+                <button id="delete-adjancet-node" type="button" class="btn btn-delete" >Odstrániť</button>
+                <button id="submit-adjancet-node" type="button" class="btn btn-submit">Uložiť</button>
+                <button type="button" class="btn btn-normal" data-dismiss="modal">Zrušiť</button>
+            </div>
+        </div>
+    </div>
+</div>

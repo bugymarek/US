@@ -3,9 +3,9 @@ var Areal = GETSCHEMA('Areal');
 
 exports.install = function () {
 	F.route('/graf', viewGraf, ['authorize', 'get']);
-	//F.route('/areals/{id}', viewAreal, ['authorize', 'get']);
-	// F.route('/areals', createAreal, ['authorize', 'xhr', 'json', 'post']);
-	// F.route('/areals/{id}', updateAreal, ['authorize', 'xhr', 'json', 'put']);
+	F.route('/nodes/{id}', viewNode, ['authorize', 'get']);
+	F.route('/nodes', createNode, ['authorize', 'xhr', 'json', 'post']);
+	F.route('/nodes/{id}', updateNode, ['authorize', 'xhr', 'json', 'put']);
 	// F.route('/areals/{id}', deleteAreal, ['authorize', 'xhr', 'delete']);
 	F.route('/node', viewNodeForm, ['authorize', 'get']);
 };
@@ -71,7 +71,7 @@ function loadGraf(next) {
 		context.async.run(function () {
 			if (context.error.hasError()) {
 				return self.throw500(context.error);
-				}
+			}
 			//utriedenie v poradi podla poschodia, nazvu vrcholu.
 			context.results.sort(function (a, b) {
 				if (a.poschodie < b.poschodie) return -1;
@@ -107,6 +107,7 @@ function getPropertyOfArealForNode(next) {
 
 			delete model.budova;
 			delete model.poschodia;
+			model._id = element._id;
 			model.areal = model.nazov;
 			model.poschodie = model.vrcholy.find(x => x.nazov === element.nazov).poschodie;
 			model.nazov = model.vrcholy.find(x => x.nazov === element.nazov).nazov;
@@ -139,47 +140,157 @@ function loadNodesCount(next) {
 	});
 }
 
-/**************************************************************************
- * GET - Nacitanie a zobrazenie arealu
- */
-function viewAreal(id) {
-	var self = this;
-	id = U.parseObjectID(id);
-	if (!id) {
-		return self.throw400(new ErrorBuilder().push('errorAreal-unableToGet'));
-	}
-	Areal.get({
-		_id: id
-	}, function (err, model) {
-		if (err) {
-			return self.throw500(err);
-		}
-		if (!model || !model._id) {
-			return self.throw404(new ErrorBuilder().push('errorAreal-notFound'));
-		}
-		return self.view(
-			'areal',
-			{
-				areal: model
-			});
-	});
-}
-
 /**
  * GET - Zobraznie prazdneho formularu pre vrchol grafu.
  */
 function viewNodeForm() {
 	var self = this;
-	return self.view('node');
+	var context = {
+		async: new Utils.Async(),
+		error: new ErrorBuilder(),
+		results: {}
+	};
+	context.async.await(loadAreals.bind(context));
+	context.async.run(function () {
+		if (context.error.hasError()) {
+			return self.throw500(context.error);
+		}
+		return self.view('node', context.results);
+	});
 }
 
 /**
- * POST - Vytvorenie noveho arealu.
+ * Nacitanie zoznamu arealov utriedeneho nazvu.
+ */
+function loadAreals(next) {
+	var self = this;
+	Areal.query({
+		sort: {
+			nazov: 1
+		}
+	}, function (err, areals) {
+		if (err) {
+			self.error.push(err);
+			self.async.cancel();
+			return next();
+		}
+		self.results.areals = areals;
+		return next();
+	});
+}
+
+/**
+ * GET - Zobraznie detailu existujuceho vrcholu grafu.
+ */
+function viewNode(id) {
+	var self = this;
+	var context = {
+		async: new Utils.Async(),
+		error: new ErrorBuilder(),
+		id: id,
+		results: {}
+	};
+	context.async.await(loadAreals.bind(context));
+	context.async.await(loadNode.bind(context));
+	context.async.run(function () {
+		if (context.error.hasError()) {
+			return self.throw500(context.error);
+		}
+		console.log(context.results);
+		return self.view('node', context.results);
+	});
+}
+
+/*
+ * GET - Nacitanie vrcholu grafu
+ */
+function loadNode(next) {
+	var self = this;
+	id = U.parseObjectID(self.id);
+	if (!id) {
+		return self.throw400(new ErrorBuilder().push('errorNode-unableToGet'));
+	}
+	Graf.get({
+		_id: id
+	}, function (err, model) {
+		if (err) {
+			self.error.push(err);
+			self.async.cancel();
+			return next();
+		}
+		if (!model || !model._id) {
+			self.error.push('errorNode-notFound');
+			self.async.cancel();
+			return next();
+		}
+		self.results.node = model;
+		var context = {
+			async: new Utils.Async(),
+			error: new ErrorBuilder(),
+			node: model,
+			results: {}
+		};
+		context.async.await(getNodesOfArealForNode.bind(context));
+		context.async.run(function () {
+			if (self.error.hasError()) {
+				return self.error.push(context.error);
+			}
+			self.results.nodes = context.results.nodes;
+			return next();
+		});
+	});
+}
+
+/**
+ *  GET - vrati vrcholy arealu potrebne pre vrchol grafu.
+ * @param {String} id ID arealu.
+ * @param {String} name nazov vrcholu.
+ */
+function getNodesOfArealForNode(next) {
+	self = this;
+	Areal.get({
+		nazov: self.node.areal
+	}, function (err, model) {
+		if (err) {
+			return self.throw500(err);
+			self.async.cancel();
+			return next();
+		}
+		if (!model || !model.nazov || !Array.isArray(model.vrcholy) || model.vrcholy.length === 0) {
+			return self.throw404(new ErrorBuilder().push('errorAreal-unableToGet'));
+			self.async.cancel();
+			return next();
+		}
+
+		delete model._id
+		delete model.budova;
+		delete model.nazov;
+		delete model.url;
+		delete model.poschodia;
+		self.node.poschodie = model.vrcholy.find(x => x.nazov === self.node.nazov).poschodie;
+		self.node.suradnicaX = model.vrcholy.find(x => x.nazov === self.node.nazov).suradnicaX;
+		self.node.suradnicaY = model.vrcholy.find(x => x.nazov === self.node.nazov).suradnicaY;
+
+		//utriedenie v poradi podla poschodia, nazvu vrcholu.
+			model.vrcholy.sort(function (a, b) {
+				if (a.poschodie < b.poschodie) return -1;
+				if (a.poschodie > b.poschodie) return 1;
+				if (a.nazov < b.nazov) return -1;
+				if (a.nazov > b.nazov) return 1;
+				return 0;
+			});
+		self.results.nodes = model.vrcholy;
+		return next();
+	});
+}
+
+/**
+ * POST - Vytvorenie noveho vrcholuj v grafe.
  */
 
-function createAreal() {
+function createNode() {
 	var self = this;
-	Areal.make(self.body, function (err, model) {
+	Graf.make(self.body, function (err, model) {
 		if (err) {
 			return self.throw400(err);
 		}
@@ -196,24 +307,24 @@ function createAreal() {
 }
 
 /**
- * PUT - Aktualizacia existujuceho arealu.
+ * PUT - Aktualizacia existujuceho vrchlu v grafe.
  * 
- * @param {String} id ID arealu.
+ * @param {String} id ID vrcholu v grafe.
  */
-function updateAreal(id) {
+function updateNode(id) {
 	var self = this;
 	id = U.parseObjectID(id);
 	if (!id) {
-		return self.throw400(new ErrorBuilder().push('errorAreal-unableToUpdate'));
+		return self.throw400(new ErrorBuilder().push('errorGraf-unableToUpdate'));
 	}
-	Areal.get({
+	Graf.get({
 		_id: id
 	}, function (err, model) {
 		if (err) {
 			return self.throw500(err);
 		}
 		if (!model || !model._id) {
-			return self.throw404(new ErrorBuilder().push('errorAreal-unableToUpdate'));
+			return self.throw404(new ErrorBuilder().push('errorGraf-unableToUpdate'));
 		}
 		model.$workflow('update', self.body, function (err) {
 			if (err) {
@@ -230,6 +341,8 @@ function updateAreal(id) {
 		});
 	});
 }
+
+/**************************************************************************
 
 /**
  * DELETE - Odstranenie existujuceho arealu.

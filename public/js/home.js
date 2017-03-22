@@ -49,7 +49,7 @@ function onNodeItemOfTable() {
 
         // posunutie a zobrazenie bodu na spravnom mieste
         $("#mapPoint").css({ left: (x) + "px", top: (y + pinHeight/2) + "px" });
-        $("#mapPoint").css('z-index', 3000);
+        $("#mapPoint").css('z-index', 50);
     }, 60);
 }
 
@@ -265,7 +265,7 @@ function setMap(object, byIndex, floor) {
     // pridanie tlacidiel pre poschodia
     $('#buttons').empty();
     $('.imgScroll').empty();
-    var mapPoint = $('<i id="mapPoint" class="fa fa-dot-circle-o faa-pulse animated fa-2x "></i>');
+    var mapPoint = $('<i id="mapPoint" class="mapPoint fa fa-dot-circle-o faa-pulse animated fa-2x "></i>');
     $('.imgScroll').append(mapPoint);
     if (map.poschodia && Array.isArray(map.poschodia) && map.poschodia.length > 0) {
         var i = 1;

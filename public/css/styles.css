@@ -239,7 +239,7 @@ body {
     
 }
 
-#node-modal{
+.lg-modal{
     padding-left: 17px;
     max-width: 1200px;
     margin: 0 auto;
@@ -272,6 +272,10 @@ body {
     border-color: $darkBlueColor;
     color: #fff;
     float: right;
+}
+
+.text-left .btn-submit {
+    float: none;
 }
 
 .btn-submit:hover,
@@ -749,6 +753,18 @@ table thead {
   border: 1px solid $lightBlueColor;
 }
 
+table thead tr:nth-child(1){
+
+  border-bottom: 1px solid $lightTableBackgroundColor;
+  height: 38px;
+}
+
+td.head,
+th.head {
+  width: 100% !important;
+  float: left;
+}
+
 /*drag & drop */
 
 .ui-sortable {
@@ -840,7 +856,7 @@ table thead {
 .dropdown {
     position: relative;
     display: inline-block;
-    z-index: 2;
+    z-index: 100;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -858,6 +874,7 @@ table thead {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    cursor: pointer;
 }
 
 /* Change color of dropdown links on hover */
@@ -882,7 +899,7 @@ table thead {
     border: 1px solid $lightBorderColor;  
 }
 
-#mapPoint{
+.mapPoint{
     z-index: -10;
     position: relative;
     color: $darkBlueColor;

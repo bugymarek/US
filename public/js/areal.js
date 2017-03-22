@@ -20,7 +20,7 @@ $(document).ready(function () {
     $('#submit-areal').on('click', onSubmitArealClick);
     // restart hodnot
     $('#cancel-areal').on('click', onCancelClick);
-    // Odstranenie existujuceho festivalu
+    // Odstranenie existujuceho vrcholu
     $('#delete-areal').on('click', onArealDeleteClik);
 
 
@@ -38,6 +38,7 @@ $(document).ready(function () {
 
     // Odstranenie  vrcholu z tabulky
     $('#delete-node').on('click', onDeleteNodeClik);
+
 
     // Skrytie modalneho okna pre detail poschodia  - restart hodnot
     $('#floor-modal').on('hidden.bs.modal', onHideModalFloor);
@@ -62,7 +63,7 @@ function onSubmitArealClick() {
     isLoading = true;
     $('#areal-name').closest('.form-group').removeClass('has-error');
     $('#error').html('');
-    $('#submit-item').html('<span class="fa fa-spinner fa-spin"></span> Ukladám');
+    $('#submit-areal').html('<span class="fa fa-spinner fa-spin"></span> Ukladám');
     var url = '/areals';
     var id = $('#areal-id').val();
     if (id) {
@@ -178,7 +179,7 @@ function onHideModalNode() {
     $('#delete-node').hide();
     $('#submit-node').prop('disabled', false);
     $('#node-id').val('');
-    $('.modal-node-title').html('Nový&nbsp;používateľ');
+    $('.modal-node-title').html('Nový&nbsp;vrchol');
 
     // X-ova suradnica
     $('#node-xPosition').val('');
@@ -267,6 +268,7 @@ function onSubmitNodeClick() {
  * Pridanie noveho vrcholu
  */
 function addNode() {
+    var budova = $('input[name=switch]:checked', '.switch-field').val() === "Yes" ? true : false;
     var node = {
         nazov: $('#node-name').val(),
         typ: $("#type-combobox").val(),
@@ -275,10 +277,16 @@ function addNode() {
         poschodie: $("#buttons .btn-normal-active").html()
     };
     var name = node.nazov.trim();
-    if (name && node.typ && node.suradnicaX && node.suradnicaY && node.poschodie) {
+    if (name && node.typ && node.suradnicaX && node.suradnicaY) {
+
         if (checkItemExistInTable('#table-nodes', node)) {
             $('#node-name').closest('.form-group').addClass('has-error');
             showErrorMessage('Zadaný vrchol už existuje.');
+            return;
+        }
+
+        if(budova && !node.poschodie){
+            showErrorMessage('Vyberte poschodie');
             return;
         }
 
@@ -321,10 +329,6 @@ function addNode() {
             html += '<span class="sr-only">Chyba:</span>Vyberte Y-ovu súradnicu.<br />';
             $('#node-yPosition').closest('.form-group').addClass('has-error');
         }
-        if (node.poschodie == '') {
-            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
-            html += '<span class="sr-only">Chyba:</span>Vyberte poschodie.<br />';
-        }
 
         html += '</div>';
         $('#node-error').html(html);
@@ -341,6 +345,7 @@ function addNode() {
  * Aktualizacia vrcholu 
  */
 function updateNode(index) {
+    var budova = $('input[name=switch]:checked', '.switch-field').val() === "Yes" ? true : false;
     var node = {
         nazov: $('#node-name').val(),
         typ: $("#type-combobox").val(),
@@ -349,10 +354,14 @@ function updateNode(index) {
         poschodie: $("#buttons .btn-normal-active").html()
     };
     var name = node.nazov.trim();
-    if (name && node.typ && node.suradnicaX && node.suradnicaY && node.poschodie) {
+    if (name && node.typ && node.suradnicaX && node.suradnicaY ) {
         if (checkUpdateItemInTable('#table-nodes', node, index)) {
             $('#node-name').closest('.form-group').addClass('has-error');
             showErrorMessage('Zadaný vrchol už existuje.');
+            return;
+        }
+        if(budova && !node.poschodie){
+            showErrorMessage('Vyberte poschodie');
             return;
         }
         node.suradnicaX = isInt(node.suradnicaX);
@@ -385,11 +394,6 @@ function updateNode(index) {
             html += '<span class="sr-only">Chyba:</span>Vyberte Y-ovu súradnicu.<br />';
             $('#node-yPosition').closest('.form-group').addClass('has-error');
         }
-        if (node.poschodie == '') {
-            html += '<span class="fa fa-exclamation-triangle"" aria-hidden="true"></span>';
-            html += '<span class="sr-only">Chyba:</span>Vyberte poschodie.<br />';
-        }
-
         html += '</div>';
         $('#node-error').html(html);
     }

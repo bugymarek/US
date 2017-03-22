@@ -48,7 +48,7 @@ function loadGrafandAplyDijksra(next) {
         var objGraf = {};
         graf.forEach(function (element) {
             var vrcholy = {};
-            element.vrcholyDo.forEach(function (vrchol) {
+            element.susedneVrcholy.forEach(function (vrchol) {
                 vrcholy[vrchol.nazov] = vrchol.cena;
             });
             objGraf[element.nazov] = vrcholy;

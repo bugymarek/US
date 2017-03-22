@@ -1,0 +1,41 @@
+@{meta('Graf | ' + config.name)} 
+@{head('graf.js')} 
+@{repository.active = 'graf'}
+<div id="content-wrapper">
+<div clas="row">
+    <div class="col-xs-12">
+        <h1>Vrcholy</h1>
+        <a class="btn btn-submit btn-content-action @{if repository.active == 'node'} active@{fi}" href="/node">
+			<span class="fa fa-plus" aria-hidden="true"></span>
+			<span class="hide-on-mobile">&nbsp;Pridať &nbsp;vrchol</span>
+		</a>
+    </div>
+</div>
+
+
+@{if model && Array.isArray(model.graf) && model.graf.length > 0}
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th class="text-left col-sm-3 col-xs-3">Areál</th>
+            <th class="text-left col-sm-3 col-xs-3">Poschodie</th>
+            <th class="text-left col-sm-3 col-xs-3">Názov</th>
+            <th class="text-left col-sm-3 col-xs-3 hide-on-mobile">Typ</th>
+        <tr>
+    </thead>
+    <tbody>
+        @{foreach node in model.graf}
+        <tr class="item-detail" data-item="@{node._id.toString()}">
+            <td class="text-left">@{node.areal || '-'}</td>
+            <td class="text-left">@{node.poschodie === 0 || node.poschodie ? node.poschodie : '-'}</td>
+            <td class="text-left">@{node.nazov || '-'}</td>
+            <td class="text-left hide-on-mobile">@{node.typ || '-'}</td>
+        </tr>
+        @{end}
+    </tbody>
+</table>
+
+@{view('~/partials/pagination', model)} @{else}
+<div>Aktuálne neevidujeme žiadne vrcholy.</div>
+@{fi}
+</div>

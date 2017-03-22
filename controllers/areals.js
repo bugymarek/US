@@ -8,6 +8,8 @@ exports.install = function () {
     F.route('/areals/{id}', updateAreal, ['authorize', 'xhr', 'json', 'put']);
     F.route('/areals/{id}', deleteAreal, ['authorize', 'xhr', 'delete']);
 	F.route('/areal', viewArealForm, ['authorize', 'get']);
+	F.route('/nodesAreal/{id}', nodesAreal, ['authorize', 'get']);
+	F.route('/nodeAreal', nodeAreal, ['authorize', 'get']);
 };   
 
 /**
@@ -72,6 +74,73 @@ function viewAreal(id) {
 		{
             areal: model
         });
+	});
+}
+
+/**
+ * GET - Vrati vrchol arealu
+ */
+function nodeAreal() {
+	var self = this;
+
+	if (!self.query.arealName || !self.query.nodeName) {
+		return self.throw400(new ErrorBuilder().push('errorNode-unableToGet'));
+	}
+	Areal.get({
+		nazov: self.query.arealName
+	}, function (err, model) {
+		if (err) {
+			return self.throw500(err);
+		}
+		if (!model || !model._id) {
+			return self.throw404(new ErrorBuilder().push('errorNode-notFound'));
+		}
+		delete model.budova;
+		delete model.url;
+		delete model.poschodia;
+		//utriedenie v poradi podla poschodia, nazvu vrcholu.
+			model.vrcholy.sort(function (a, b) {
+				if (a.poschodie < b.poschodie) return -1;
+				if (a.poschodie > b.poschodie) return 1;
+				if (a.nazov < b.nazov) return -1;
+				if (a.nazov > b.nazov) return 1;
+				return 0;
+			});
+		model = model.vrcholy.find(x => x.nazov === self.query.nodeName)
+        return self.json(model);
+	});
+}
+
+/**
+ * GET - Vracia vrcholy arealu
+ */
+function nodesAreal(id) {
+	var self = this;
+	id = U.parseObjectID(id);
+	if (!id) {
+		return self.throw400(new ErrorBuilder().push('errorAreal-unableToGet'));
+	}
+	Areal.get({
+		_id: id
+	}, function (err, model) {
+		if (err) {
+			return self.throw500(err);
+		}
+		if (!model || !model._id) {
+			return self.throw404(new ErrorBuilder().push('errorAreal-notFound'));
+		}
+		delete model.budova;
+		delete model.url;
+		delete model.poschodia;
+		//utriedenie v poradi podla poschodia, nazvu vrcholu.
+			model.vrcholy.sort(function (a, b) {
+				if (a.poschodie < b.poschodie) return -1;
+				if (a.poschodie > b.poschodie) return 1;
+				if (a.nazov < b.nazov) return -1;
+				if (a.nazov > b.nazov) return 1;
+				return 0;
+			});
+        return self.json(model);
 	});
 }
 
