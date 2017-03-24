@@ -15,7 +15,7 @@ Graf.setPrepare(onPrepare);
 Graf.setValidate(onValidate);
 
 SusednyVrchol.define('nazov', String, true);
-SusednyVrchol.define('cena', String, true);
+SusednyVrchol.define('cena', Number, true);
 SusednyVrchol.define('areal', String, true);
 
 SusednyVrchol.constant('allowed', ['cena', 'nazov, areal']);
@@ -230,4 +230,23 @@ Graf.addWorkflow('checkIfNotExists', function (error, model, options, callback) 
     });
 });
 
+
+/**
+ * Odstranenie existujuceho vrcholu z grafu.
+ * 
+ * @param {Object} error Chyba.
+ * @param {Object} options Parametre funkcie.
+ * @return {*}
+ */
+Graf.setRemove(function (error, options, callback) {
+    DATABASE('graf').remove({
+        _id: options._id
+    }, function (err) {
+        if (err) {
+            error.push('unableToDelete');
+            return callback();
+        }
+        return callback();
+    });
+});
 exports.Graf = Graf;

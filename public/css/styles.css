@@ -892,7 +892,7 @@ th.head {
 
 /* img horizontalne a vertikalne skrolovanie*/
 .imgScroll{
-    height: 500px;
+    height: 700px;
     width: 100%;
     overflow: auto;
     border-radius: 4px;

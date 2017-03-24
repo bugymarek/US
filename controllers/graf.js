@@ -6,7 +6,7 @@ exports.install = function () {
 	F.route('/nodes/{id}', viewNode, ['authorize', 'get']);
 	F.route('/nodes', createNode, ['authorize', 'xhr', 'json', 'post']);
 	F.route('/nodes/{id}', updateNode, ['authorize', 'xhr', 'json', 'put']);
-	// F.route('/areals/{id}', deleteAreal, ['authorize', 'xhr', 'delete']);
+	F.route('/nodes/{id}', deleteNode, ['authorize', 'xhr', 'delete']);
 	F.route('/node', viewNodeForm, ['authorize', 'get']);
 };
 
@@ -15,7 +15,7 @@ exports.install = function () {
  */
 function viewGraf() {
 	var self = this;
-	var limit = 10;
+	var limit = 30;
 	var page = U.parseInt(self.query.p, 1);
 	if (page <= 0 || (self.query.p && self.query.p != page.toString())) {
 		return self.redirect('/graf');
@@ -56,6 +56,12 @@ function loadGraf(next) {
 		offset: self.context.offset,
 		limit: self.context.limit
 	}, function (err, graf) {
+		if(!Array.isArray(graf) || !graf || graf.length == 0){
+			console.log();
+			self.results.graf = graf;
+			self.async.cancel();
+			return next();
+		}		
 		if (err) {
 			self.error.push(err);
 			self.async.cancel();
@@ -196,7 +202,6 @@ function viewNode(id) {
 		if (context.error.hasError()) {
 			return self.throw500(context.error);
 		}
-		console.log(context.results);
 		return self.view('node', context.results);
 	});
 }
@@ -342,20 +347,18 @@ function updateNode(id) {
 	});
 }
 
-/**************************************************************************
-
 /**
- * DELETE - Odstranenie existujuceho arealu.
+ * DELETE - Odstranenie existujuceho vrchlu z grafu.
  * 
- * @param {String} id ID arealu.
+ * @param {String} id ID vrchlu.
  */
-function deleteAreal(id) {
+function deleteNode(id) {
 	var self = this;
 	id = U.parseObjectID(id);
 	if (!id) {
-		return self.throw400(new ErrorBuilder().push('errorAreal-unableToDelete'));
+		return self.throw400(new ErrorBuilder().push('errorGraf-unableToDelete'));
 	}
-	Areal.remove({
+	Graf.remove({
 		_id: id
 	}, function (err) {
 		if (err) {

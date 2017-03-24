@@ -105,8 +105,7 @@ function onCancelClick() {
     location.href = '/areals/';
 }
 
-// odstranenie clena kapely
-
+// odstranenie arealu
 function onArealDeleteClik() {
     if (!$('#confirm-delete-areal').is(':visible')) {
         $('#submit-areal').prop('disabled', true);
@@ -136,7 +135,7 @@ function onArealDeleteClik() {
                 });
             }
         }
-        showErrorMessage(message || ' Nepodarilo sa odstrániť kapelu');
+        showErrorMessage(message || ' Nepodarilo sa odstrániť araál.');
     }).always(function () {
         $('#delete-areal').html('Odstrániť');
         isLoading = false;

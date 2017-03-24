@@ -79,7 +79,7 @@
 					<div class="upload-image-container">
 						<button type="button" class="btn btn-sm btn-normal btn-upload-image">Nahrať&nbsp;obrázok</button>
 						<input id="map-image-file" class="hidden file-input" type="file" accept="image/png, image/jpeg">
-						<input id="map-image" value="@{model && model.areal ? (model.areal.url || '') : ''}" class="uploaded-image-input" type="hidden">
+						<input id="map-image" value="@{model && model.areal ? (model.areal.url || 'uploads/placeholder.jpg') : 'uploads/placeholder.jpg'}" class="uploaded-image-input" type="hidden">
 					</div>
 				</div>
 		    </div>
